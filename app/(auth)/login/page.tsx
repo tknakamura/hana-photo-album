@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Heart, Camera, Sparkles } from 'lucide-react'
+import BackgroundVideo from '@/components/ui/BackgroundVideo'
 
 export default function LoginPage() {
   const [username, setUsername] = useState('')
@@ -28,7 +29,14 @@ export default function LoginPage() {
         .eq('password_hash', password)
         .single()
 
-      if (userError || !userData) {
+      if (userError) {
+        console.error('Database error:', userError)
+        setError('データベースエラーが発生しました。')
+        setIsLoading(false)
+        return
+      }
+
+      if (!userData) {
         setError('ログインに失敗しました。IDとパスワードを確認してください。')
         setIsLoading(false)
         return
@@ -39,7 +47,8 @@ export default function LoginPage() {
       
       router.push('/gallery')
       router.refresh()
-    } catch {
+    } catch (error) {
+      console.error('Login error:', error)
       setError('予期しないエラーが発生しました。')
     } finally {
       setIsLoading(false)
@@ -47,7 +56,9 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center mobile-container py-8">
+    <>
+      <BackgroundVideo />
+      <div className="min-h-screen flex items-center justify-center mobile-container py-8 bg-transparent">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -183,6 +194,7 @@ export default function LoginPage() {
           </div>
         </motion.div>
       </motion.div>
-    </div>
+      </div>
+    </>
   )
 }
