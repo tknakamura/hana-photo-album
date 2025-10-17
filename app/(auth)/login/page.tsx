@@ -71,8 +71,8 @@ export default function LoginPage() {
     
     if (!formState.password) {
       errors.password = 'パスワードを入力してください'
-    } else if (formState.password.length < 6) {
-      errors.password = 'パスワードは6文字以上で入力してください'
+    } else if (!/^\d{4}$/.test(formState.password)) {
+      errors.password = 'パスワードは4桁の数字で入力してください'
     }
     
     updateFormState({ validationErrors: errors })
@@ -256,11 +256,11 @@ export default function LoginPage() {
               transition={{ delay: 0.8 }}
               className="smugmug-card p-10 mx-6"
             >
-              <form onSubmit={handleLogin} className="space-y-8">
+              <form onSubmit={handleLogin} className="space-y-6">
                 <div>
                   <label 
                     htmlFor="username" 
-                    className="block text-sm font-semibold text-gray-900 mb-3 uppercase tracking-wide"
+                    className="block text-sm font-semibold text-white mb-4 uppercase tracking-wide"
                     aria-describedby={formState.validationErrors.username ? "username-error" : undefined}
                   >
                     ユーザーID
@@ -272,7 +272,7 @@ export default function LoginPage() {
                       type="text"
                       value={formState.username}
                       onChange={handleUsernameChange}
-                      className={`input-smugmug pr-10 ${formState.validationErrors.username ? 'border-red-500 focus:border-red-500' : 'focus:border-black'}`}
+                      className={`input-smugmug pr-10 ${formState.validationErrors.username ? 'border-white focus:border-white' : 'focus:border-white'}`}
                       placeholder="ユーザーIDを入力"
                       required
                       disabled={formState.isLoading}
@@ -281,18 +281,18 @@ export default function LoginPage() {
                       aria-describedby={formState.validationErrors.username ? "username-error" : undefined}
                     />
                     {formState.username && !formState.validationErrors.username && (
-                      <CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-500" />
+                      <CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-white" />
                     )}
                   </div>
                   {formState.validationErrors.username && (
                     <motion.div
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="flex items-center mt-2 text-sm text-red-600"
+                      className="flex items-center mt-3 mb-4 text-sm text-white"
                       id="username-error"
                       role="alert"
                     >
-                      <AlertCircle className="w-4 h-4 mr-1" />
+                      <AlertCircle className="w-4 h-4 mr-2 text-white" />
                       {formState.validationErrors.username}
                     </motion.div>
                   )}
@@ -301,7 +301,7 @@ export default function LoginPage() {
                 <div>
                   <label 
                     htmlFor="password" 
-                    className="block text-sm font-semibold text-gray-900 mb-3 uppercase tracking-wide"
+                    className="block text-sm font-semibold text-white mb-4 uppercase tracking-wide"
                     aria-describedby={formState.validationErrors.password ? "password-error" : undefined}
                   >
                     パスワード
@@ -313,7 +313,7 @@ export default function LoginPage() {
                       type={formState.showPassword ? "text" : "password"}
                       value={formState.password}
                       onChange={handlePasswordChange}
-                      className={`input-smugmug pr-10 ${formState.validationErrors.password ? 'border-red-500 focus:border-red-500' : 'focus:border-black'}`}
+                      className={`input-smugmug pr-10 ${formState.validationErrors.password ? 'border-white focus:border-white' : 'focus:border-white'}`}
                       placeholder="••••••••"
                       required
                       disabled={formState.isLoading}
@@ -324,7 +324,7 @@ export default function LoginPage() {
                     <button
                       type="button"
                       onClick={() => updateFormState({ showPassword: !formState.showPassword })}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none focus:text-gray-700"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-200 focus:outline-none focus:text-gray-200"
                       disabled={formState.isLoading}
                       aria-label={formState.showPassword ? "パスワードを隠す" : "パスワードを表示"}
                     >
@@ -339,11 +339,11 @@ export default function LoginPage() {
                     <motion.div
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="flex items-center mt-2 text-sm text-red-600"
+                      className="flex items-center mt-3 mb-4 text-sm text-white"
                       id="password-error"
                       role="alert"
                     >
-                      <AlertCircle className="w-4 h-4 mr-1" />
+                      <AlertCircle className="w-4 h-4 mr-2 text-white" />
                       {formState.validationErrors.password}
                     </motion.div>
                   )}
@@ -353,12 +353,12 @@ export default function LoginPage() {
                   <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm font-medium rounded-r-lg"
+                    className="p-4 bg-transparent border-l-4 border-white text-white text-sm font-medium rounded-r-lg mb-4"
                     role="alert"
                     aria-live="polite"
                   >
                     <div className="flex items-center">
-                      <AlertCircle className="w-5 h-5 mr-2 flex-shrink-0" />
+                      <AlertCircle className="w-5 h-5 mr-2 flex-shrink-0 text-white" />
                       <span>{formState.error}</span>
                     </div>
                   </motion.div>
@@ -393,7 +393,7 @@ export default function LoginPage() {
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="text-center mt-2 text-sm text-gray-600"
+                    className="text-center mt-3 text-sm text-white"
                     id="login-attempts"
                   >
                     ログイン試行回数: {formState.loginAttempts}/5
@@ -401,11 +401,11 @@ export default function LoginPage() {
                 )}
               </form>
 
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-500">
+          <div className="mt-8 text-center">
+            <p className="text-sm text-white mb-2">
               家族専用のアルバムです
             </p>
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="text-xs text-white opacity-80">
               管理者から提供されたIDとパスワードでログインしてください
             </p>
           </div>
@@ -418,7 +418,7 @@ export default function LoginPage() {
               transition={{ delay: 1.2 }}
               className="text-center mt-8 px-6"
             >
-              <div className="flex items-center justify-center space-x-2 text-gray-400">
+              <div className="flex items-center justify-center space-x-2 text-white">
                 <Sparkles className="w-4 h-4 animate-pulse" />
                 <span className="text-sm">Made with love for 華ちゃん</span>
                 <Sparkles className="w-4 h-4 animate-pulse" />

@@ -69,8 +69,8 @@ function validateInput(username: string, password: string): { valid: boolean; er
   
   if (!password || typeof password !== 'string') {
     errors.push('パスワードが無効です')
-  } else if (password.length < 6 || password.length > 128) {
-    errors.push('パスワードは6文字以上128文字以下で入力してください')
+  } else if (!/^\d{4}$/.test(password)) {
+    errors.push('パスワードは4桁の数字で入力してください')
   }
   
   return { valid: errors.length === 0, errors }
