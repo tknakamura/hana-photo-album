@@ -7,42 +7,63 @@ export function getPool(): Pool {
   if (!pool) {
     const connectionString = process.env.DATABASE_URL
     if (!connectionString) {
-      throw new Error('DATABASE_URL environment variable is not set')
+      console.error('DATABASE_URL environment variable is not set')
+      // 開発環境ではダミーの接続文字列を使用
+      const dummyConnectionString = 'postgresql://dummy:dummy@localhost:5432/dummy'
+      pool = new Pool({
+        connectionString: dummyConnectionString,
+        ssl: false,
+      })
+    } else {
+      pool = new Pool({
+        connectionString,
+        ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+      })
     }
-    
-    pool = new Pool({
-      connectionString,
-      ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
-    })
   }
   return pool
 }
 
 // ユーザー認証
 export async function authenticateUser(username: string, password: string) {
-  const pool = getPool()
-  const result = await pool.query(
-    'SELECT * FROM users WHERE username = $1 AND password_hash = $2',
-    [username, password]
-  )
-  return result.rows[0] || null
+  try {
+    const pool = getPool()
+    const result = await pool.query(
+      'SELECT * FROM users WHERE username = $1 AND password_hash = $2',
+      [username, password]
+    )
+    return result.rows[0] || null
+  } catch (error) {
+    console.error('Database authentication error:', error)
+    return null
+  }
 }
 
 // ユーザー情報取得
 export async function getUserById(id: number) {
-  const pool = getPool()
-  const result = await pool.query('SELECT * FROM users WHERE id = $1', [id])
-  return result.rows[0] || null
+  try {
+    const pool = getPool()
+    const result = await pool.query('SELECT * FROM users WHERE id = $1', [id])
+    return result.rows[0] || null
+  } catch (error) {
+    console.error('Database getUserById error:', error)
+    return null
+  }
 }
 
 // 写真一覧取得
 export async function getPhotos(limit = 50, offset = 0) {
-  const pool = getPool()
-  const result = await pool.query(
-    'SELECT * FROM photos ORDER BY taken_at DESC LIMIT $1 OFFSET $2',
-    [limit, offset]
-  )
-  return result.rows
+  try {
+    const pool = getPool()
+    const result = await pool.query(
+      'SELECT * FROM photos ORDER BY taken_at DESC LIMIT $1 OFFSET $2',
+      [limit, offset]
+    )
+    return result.rows
+  } catch (error) {
+    console.error('Database getPhotos error:', error)
+    return []
+  }
 }
 
 // 写真追加
