@@ -82,6 +82,12 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('アップロードエラー:', error)
+    
+    // データベース接続エラーの場合
+    if (error instanceof Error && error.message.includes('DATABASE_URL')) {
+      return NextResponse.json({ error: 'データベース接続エラー: 環境変数が設定されていません' }, { status: 500 })
+    }
+    
     return NextResponse.json({ error: 'アップロードに失敗しました' }, { status: 500 })
   }
 }

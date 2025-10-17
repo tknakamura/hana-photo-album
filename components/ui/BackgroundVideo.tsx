@@ -39,6 +39,7 @@ export default function BackgroundVideo() {
         }}
       >
         <source src="/background-video.mp4" type="video/mp4" />
+        <source src="/background-animation.webp" type="image/webp" />
         お使いのブラウザは動画をサポートしていません。
       </video>
 
