@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 // import { createClient } from '@/lib/supabase/client' // 不要になったためコメントアウト
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { Heart, Camera, Sparkles, Eye, EyeOff, AlertCircle, CheckCircle } from 'lucide-react'
+import { Heart, AlertCircle, CheckCircle } from 'lucide-react'
 import BackgroundVideo from '@/components/ui/BackgroundVideo'
 import { LoginFormState, ValidationErrors, LoginResponse } from '@/types/auth'
 
@@ -63,8 +63,8 @@ export default function LoginPage() {
     
     if (!formState.username.trim()) {
       errors.username = 'ユーザーIDを入力してください'
-    } else if (formState.username.length < 3) {
-      errors.username = 'ユーザーIDは3文字以上で入力してください'
+    } else if (formState.username.length < 2) {
+      errors.username = 'ユーザーIDは2文字以上で入力してください'
     } else if (!/^[a-zA-Z0-9_-]+$/.test(formState.username)) {
       errors.username = 'ユーザーIDは英数字、ハイフン、アンダースコアのみ使用できます'
     }
@@ -211,7 +211,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen relative">
       <BackgroundVideo />
-      <div className="relative z-10 min-h-screen flex items-center justify-center p-6">
+      <div className="relative z-10 min-h-screen flex items-center justify-center px-6">
         <div className="w-full max-w-lg mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -220,23 +220,14 @@ export default function LoginPage() {
             className="w-full"
           >
             {/* SmugMug風ヘッダー */}
-            <div className="text-center mb-12 px-6">
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-            className="inline-flex items-center justify-center w-24 h-24 bg-black rounded-full mb-6 shadow-2xl"
-          >
-            <Camera className="w-12 h-12 text-white" />
-          </motion.div>
-          
+            <div className="text-center mb-12">
           <motion.h1
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
             className="smugmug-title mb-4"
           >
-            華ちゃんのアルバム
+            HANA LOG
           </motion.h1>
           
           <motion.p
@@ -254,7 +245,7 @@ export default function LoginPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8 }}
-              className="smugmug-card p-10 mx-6"
+              className="smugmug-card px-10 py-8"
             >
               <form onSubmit={handleLogin} className="space-y-6">
                 <div>
@@ -272,7 +263,7 @@ export default function LoginPage() {
                       type="text"
                       value={formState.username}
                       onChange={handleUsernameChange}
-                      className={`input-smugmug pr-10 ${formState.validationErrors.username ? 'border-white focus:border-white' : 'focus:border-white'}`}
+                      className={`input-smugmug ${formState.validationErrors.username ? 'border-white focus:border-white' : 'focus:border-white'}`}
                       placeholder="ユーザーIDを入力"
                       required
                       disabled={formState.isLoading}
@@ -310,10 +301,10 @@ export default function LoginPage() {
                     <input
                       ref={passwordRef}
                       id="password"
-                      type={formState.showPassword ? "text" : "password"}
+                      type="password"
                       value={formState.password}
                       onChange={handlePasswordChange}
-                      className={`input-smugmug pr-10 ${formState.validationErrors.password ? 'border-white focus:border-white' : 'focus:border-white'}`}
+                      className={`input-smugmug ${formState.validationErrors.password ? 'border-white focus:border-white' : 'focus:border-white'}`}
                       placeholder="••••••••"
                       required
                       disabled={formState.isLoading}
@@ -321,19 +312,6 @@ export default function LoginPage() {
                       aria-invalid={!!formState.validationErrors.password}
                       aria-describedby={formState.validationErrors.password ? "password-error" : undefined}
                     />
-                    <button
-                      type="button"
-                      onClick={() => updateFormState({ showPassword: !formState.showPassword })}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-200 focus:outline-none focus:text-gray-200"
-                      disabled={formState.isLoading}
-                      aria-label={formState.showPassword ? "パスワードを隠す" : "パスワードを表示"}
-                    >
-                      {formState.showPassword ? (
-                        <EyeOff className="w-5 h-5" />
-                      ) : (
-                        <Eye className="w-5 h-5" />
-                      )}
-                    </button>
                   </div>
                   {formState.validationErrors.password && (
                     <motion.div
@@ -411,22 +389,19 @@ export default function LoginPage() {
           </div>
         </motion.div>
 
-            {/* フッター */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.2 }}
-              className="text-center mt-8 px-6"
-            >
-              <div className="flex items-center justify-center space-x-2 text-white">
-                <Sparkles className="w-4 h-4 animate-pulse" />
-                <span className="text-sm">Made with love for 華ちゃん</span>
-                <Sparkles className="w-4 h-4 animate-pulse" />
-              </div>
-            </motion.div>
           </motion.div>
         </div>
       </div>
+      
+      {/* フッター */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.2 }}
+        className="absolute bottom-20 left-1/2 transform -translate-x-1/2 text-center"
+      >
+        <span className="text-sm text-white">Made with love for HANA</span>
+      </motion.div>
     </div>
   )
 }

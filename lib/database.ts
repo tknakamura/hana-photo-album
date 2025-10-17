@@ -27,15 +27,43 @@ export function getPool(): Pool {
 // ユーザー認証
 export async function authenticateUser(username: string, password: string) {
   try {
+    console.log('Database: Attempting to authenticate user:', username)
     const pool = getPool()
+    
+    // まず、ユーザーが存在するかチェック
+    const userCheck = await pool.query('SELECT * FROM users WHERE username = $1', [username])
+    console.log('Database: User exists check:', userCheck.rows.length > 0 ? 'YES' : 'NO')
+    
+    if (userCheck.rows.length === 0) {
+      console.log('Database: User not found')
+      return null
+    }
+    
+    console.log('Database: User found, checking password...')
+    
+    // 生のパスワードとハッシュ化されたパスワードの両方をサポート
     const result = await pool.query(
-      'SELECT * FROM users WHERE username = $1 AND password_hash = $2',
+      'SELECT * FROM users WHERE username = $1 AND (password_hash = $2 OR password_hash = crypt($2, password_hash))',
       [username, password]
     )
+    
+    console.log('Database: Authentication query result:', result.rows.length > 0 ? 'SUCCESS' : 'FAILED')
     return result.rows[0] || null
   } catch (error) {
     console.error('Database authentication error:', error)
-    return null
+    // フォールバック: 生のパスワードでの認証
+    try {
+      const pool = getPool()
+      const result = await pool.query(
+        'SELECT * FROM users WHERE username = $1 AND password_hash = $2',
+        [username, password]
+      )
+      console.log('Database: Fallback authentication result:', result.rows.length > 0 ? 'SUCCESS' : 'FAILED')
+      return result.rows[0] || null
+    } catch (fallbackError) {
+      console.error('Fallback authentication error:', fallbackError)
+      return null
+    }
   }
 }
 

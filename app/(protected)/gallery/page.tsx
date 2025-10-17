@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 // import { createClient } from '@/lib/supabase/client' // 不要になったためコメントアウト
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Upload, Camera, LogOut, Menu, Grid, List, User as UserIcon } from 'lucide-react'
+import { Upload, Camera, LogOut, Grid, List, User as UserIcon, Home } from 'lucide-react'
 import PhotoGrid from '@/components/gallery/PhotoGrid'
 import PhotoModal from '@/components/gallery/PhotoModal'
 import { getCurrentUser, logout as authLogout, User } from '@/lib/auth'
@@ -28,7 +28,6 @@ export default function GalleryPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [sortOrder] = useState<'newest' | 'oldest'>('newest')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
-  const [showMenu, setShowMenu] = useState(false)
   const [, setCurrentUser] = useState<User | null>(getCurrentUser())
   
   const router = useRouter()
@@ -127,7 +126,7 @@ export default function GalleryPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
+      <div className="min-h-screen flex items-center justify-center bg-orange-100">
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -143,7 +142,7 @@ export default function GalleryPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-orange-100 relative" style={{ paddingBottom: '64px' }}>
       {/* SmugMug風ヘッダー */}
       <motion.header
         initial={{ y: -100 }}
@@ -160,68 +159,15 @@ export default function GalleryPage() {
           <Camera className="w-6 h-6 text-white" />
         </motion.div>
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900">華ちゃんのアルバム</h1>
-          <p className="text-sm text-gray-500">
+          <h1 className="text-2xl font-bold text-orange-800">HANA LOG</h1>
+          <p className="text-sm text-orange-600">
             {photos.length}枚の写真
           </p>
         </div>
-        <div className="relative">
-          <motion.button
-            onClick={() => setShowMenu(!showMenu)}
-            className="btn-ghost p-2 rounded-full touch-target"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <Menu className="w-6 h-6 text-gray-700" />
-          </motion.button>
-          <AnimatePresence>
-            {showMenu && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 10 }}
-                className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg py-2 z-50 border border-gray-200"
-              >
-                <button
-                  onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
-                  className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                >
-                  {viewMode === 'grid' ? (
-                    <List className="w-4 h-4 mr-2" />
-                  ) : (
-                    <Grid className="w-4 h-4 mr-2" />
-                  )}
-                  {viewMode === 'grid' ? 'リスト表示' : 'グリッド表示'}
-                </button>
-                <button
-                  onClick={() => router.push('/upload')}
-                  className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                >
-                  <Upload className="w-4 h-4 mr-2" />
-                  アップロード
-                </button>
-                <button
-                  onClick={() => router.push('/profile')}
-                  className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                >
-                  <UserIcon className="w-4 h-4 mr-2" />
-                  プロフィール編集
-                </button>
-                <div className="border-t border-gray-200 my-1"></div>
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
-                >
-                  <LogOut className="w-4 h-4 mr-2" />
-                  ログアウト
-                </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+        <div className="w-12"></div>
       </motion.header>
 
-      <main className="flex-grow p-4 smugmug-container">
+      <main className="flex-grow p-4 pb-20 smugmug-container">
         {loading ? (
           <div className="flex justify-center items-center h-64">
             <div className="loading-dots">
@@ -259,6 +205,78 @@ export default function GalleryPage() {
           </>
         )}
       </main>
+
+      {/* ボトムタブ */}
+      <div 
+        className="z-50" 
+        style={{ 
+          position: 'fixed',
+          bottom: '0px',
+          left: '0px',
+          right: '0px',
+          width: '100%',
+          height: '64px',
+          backgroundColor: '#ee7800 !important',
+          borderTop: '1px solid #d46900',
+          zIndex: 9999
+        }}
+      >
+        <div className="flex items-center justify-between w-full h-full">
+          <motion.button
+            onClick={() => router.push('/gallery')}
+            className="flex items-center justify-center flex-1"
+            style={{ height: '64px', color: '#FFFFFF', backgroundColor: 'transparent', border: 'none' }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Home className="w-6 h-6" style={{ color: '#FFFFFF' }} />
+          </motion.button>
+          
+          <motion.button
+            onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
+            className="flex items-center justify-center flex-1"
+            style={{ height: '64px', color: '#FFFFFF', backgroundColor: 'transparent', border: 'none' }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            {viewMode === 'grid' ? (
+              <List className="w-6 h-6" style={{ color: '#FFFFFF' }} />
+            ) : (
+              <Grid className="w-6 h-6" style={{ color: '#FFFFFF' }} />
+            )}
+          </motion.button>
+          
+          <motion.button
+            onClick={() => router.push('/upload')}
+            className="flex items-center justify-center flex-1"
+            style={{ height: '64px', color: '#FFFFFF', backgroundColor: 'transparent', border: 'none' }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Upload className="w-6 h-6" style={{ color: '#FFFFFF' }} />
+          </motion.button>
+          
+          <motion.button
+            onClick={() => router.push('/profile')}
+            className="flex items-center justify-center flex-1"
+            style={{ height: '64px', color: '#FFFFFF', backgroundColor: 'transparent', border: 'none' }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <UserIcon className="w-6 h-6" style={{ color: '#FFFFFF' }} />
+          </motion.button>
+          
+          <motion.button
+            onClick={handleLogout}
+            className="flex items-center justify-center flex-1"
+            style={{ height: '64px', color: '#FFFFFF', backgroundColor: 'transparent', border: 'none' }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <LogOut className="w-6 h-6" style={{ color: '#FFFFFF' }} />
+          </motion.button>
+        </div>
+      </div>
 
       <AnimatePresence>
         {isModalOpen && selectedPhoto && (

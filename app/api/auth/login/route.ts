@@ -12,9 +12,14 @@ async function validateCSRFToken(_request: NextRequest): Promise<boolean> {
   const headersList = await headers()
   const xRequestedWith = headersList.get('x-requested-with')
   const origin = headersList.get('origin')
-  const _referer = headersList.get('referer')
+  const referer = headersList.get('referer')
   
-  // XMLHttpRequestヘッダーの確認
+  // 開発環境では緩和
+  if (process.env.NODE_ENV === 'development') {
+    return true
+  }
+  
+  // XMLHttpRequestヘッダーの確認（本番環境のみ）
   if (xRequestedWith !== 'XMLHttpRequest') {
     return false
   }
@@ -61,8 +66,8 @@ function validateInput(username: string, password: string): { valid: boolean; er
   
   if (!username || typeof username !== 'string') {
     errors.push('ユーザー名が無効です')
-  } else if (username.length < 3 || username.length > 50) {
-    errors.push('ユーザー名は3文字以上50文字以下で入力してください')
+  } else if (username.length < 2 || username.length > 50) {
+    errors.push('ユーザー名は2文字以上50文字以下で入力してください')
   } else if (!/^[a-zA-Z0-9_-]+$/.test(username)) {
     errors.push('ユーザー名は英数字、ハイフン、アンダースコアのみ使用できます')
   }
@@ -118,9 +123,12 @@ export async function POST(request: NextRequest) {
     }
     
     // データベースで認証
+    console.log('Attempting authentication for user:', username)
     const user = await authenticateUser(username, password)
+    console.log('Authentication result:', user ? 'SUCCESS' : 'FAILED')
     
     if (!user) {
+      console.log('Authentication failed - user not found or password mismatch')
       return NextResponse.json(
         { 
           error: 'ログインに失敗しました。ユーザー名とパスワードを確認してください。',
