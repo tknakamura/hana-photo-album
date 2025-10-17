@@ -14,7 +14,7 @@ export default function UploadPage() {
   const [uploadFiles, setUploadFiles] = useState<UploadFile[]>([])
   const [isUploading, setIsUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
-  const [currentUser] = useState(getCurrentUser())
+  const [, setCurrentUser] = useState(getCurrentUser())
   const router = useRouter()
   const supabase = createClient()
 
@@ -30,7 +30,7 @@ export default function UploadPage() {
       try {
         const parsedUser = JSON.parse(user)
         setCurrentUser(parsedUser)
-      } catch (error) {
+      } catch {
         localStorage.removeItem('user')
         router.push('/login')
       }

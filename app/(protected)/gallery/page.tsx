@@ -29,7 +29,7 @@ export default function GalleryPage() {
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [showMenu, setShowMenu] = useState(false)
-  const [currentUser, setCurrentUser] = useState(getCurrentUser())
+  const [, setCurrentUser] = useState(getCurrentUser())
   
   const router = useRouter()
   const supabase = createClient()

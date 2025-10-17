@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { ArrowLeft, Save, Camera, User as UserIcon } from 'lucide-react'
-import { getCurrentUser, logout as authLogout, User } from '@/lib/auth'
+import { logout as authLogout, User } from '@/lib/auth'
 import Image from 'next/image'
 
 export default function ProfilePage() {
@@ -35,7 +35,7 @@ export default function ProfilePage() {
         setName(parsedUser.name)
         setBio(parsedUser.bio || '')
         setProfileImagePreview(parsedUser.profile_image_url || '')
-      } catch (error) {
+      } catch {
         localStorage.removeItem('user')
         router.push('/login')
       }
