@@ -25,9 +25,10 @@ export interface PhotoMetadata {
 }
 
 export async function extractPhotoMetadata(input: File | Buffer): Promise<PhotoMetadata> {
+  let lastModified: number
+  
   try {
     let arrayBuffer: ArrayBuffer
-    let lastModified: number
     
     if (input instanceof File) {
       arrayBuffer = await input.arrayBuffer()
