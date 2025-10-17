@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { Heart, Camera, Sparkles, User } from 'lucide-react'
+import { Heart, Camera, Sparkles } from 'lucide-react'
 
 export default function LoginPage() {
   const [username, setUsername] = useState('')

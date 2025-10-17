@@ -14,7 +14,7 @@ export default function UploadPage() {
   const [uploadFiles, setUploadFiles] = useState<UploadFile[]>([])
   const [isUploading, setIsUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
-  const [currentUser, setCurrentUser] = useState(getCurrentUser())
+  const [currentUser] = useState(getCurrentUser())
   const router = useRouter()
   const supabase = createClient()
 

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Save, Camera, User, Edit3, Upload } from 'lucide-react'
+import { ArrowLeft, Save, Camera, User } from 'lucide-react'
 import { getCurrentUser, logout as authLogout } from '@/lib/auth'
 import Image from 'next/image'
 
@@ -23,7 +23,6 @@ export default function ProfilePage() {
   const [bio, setBio] = useState('')
   const [profileImage, setProfileImage] = useState<File | null>(null)
   const [profileImagePreview, setProfileImagePreview] = useState<string>('')
-  const [isLoading, setIsLoading] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
@@ -68,7 +67,7 @@ export default function ProfilePage() {
         const fileExt = profileImage.name.split('.').pop()
         const fileName = `${user.id}-${Date.now()}.${fileExt}`
         
-        const { data: uploadData, error: uploadError } = await supabase.storage
+        const { error: uploadError } = await supabase.storage
           .from('photos')
           .upload(`profiles/${fileName}`, profileImage, {
             cacheControl: '3600',
@@ -112,8 +111,8 @@ export default function ProfilePage() {
       
       setSuccess('プロフィールを更新しました！')
       setTimeout(() => setSuccess(''), 3000)
-    } catch (error: any) {
-      setError(error.message || '更新に失敗しました')
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : '更新に失敗しました')
     } finally {
       setIsSaving(false)
     }
