@@ -8,11 +8,11 @@ const MAX_ATTEMPTS = 5
 const RATE_LIMIT_WINDOW = 15 * 60 * 1000 // 15分
 
 // CSRFトークン検証（簡易版）
-async function validateCSRFToken(request: NextRequest): Promise<boolean> {
+async function validateCSRFToken(_request: NextRequest): Promise<boolean> {
   const headersList = await headers()
   const xRequestedWith = headersList.get('x-requested-with')
   const origin = headersList.get('origin')
-  const referer = headersList.get('referer')
+  const _referer = headersList.get('referer')
   
   // XMLHttpRequestヘッダーの確認
   if (xRequestedWith !== 'XMLHttpRequest') {
@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
     }
     
     // レート制限チェック
-    const clientIP = request.ip || request.headers.get('x-forwarded-for') || 'unknown'
+    const clientIP = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown'
     const rateLimit = checkRateLimit(`${clientIP}:${username}`)
     
     if (!rateLimit.allowed) {
