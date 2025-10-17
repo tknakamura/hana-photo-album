@@ -107,7 +107,7 @@ export default function BackgroundVideo() {
 
       {/* 改善されたフォールバック背景 */}
       <div 
-        className="absolute inset-0 w-full h-full bg-gradient-to-br from-orange-50 via-pink-50 to-orange-100"
+        className="absolute inset-0 w-full h-full bg-white"
         style={{ 
           display: (isVideoLoaded && !hasError) ? 'none' : 'block',
           opacity: (isVideoLoaded && !hasError) ? 0 : 1,

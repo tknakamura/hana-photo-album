@@ -272,7 +272,7 @@ export default function LoginPage() {
                       type="text"
                       value={formState.username}
                       onChange={handleUsernameChange}
-                      className={`input-smugmug pr-10 ${formState.validationErrors.username ? 'border-red-500 focus:border-red-500' : 'focus:border-blue-500'}`}
+                      className={`input-smugmug pr-10 ${formState.validationErrors.username ? 'border-red-500 focus:border-red-500' : 'focus:border-black'}`}
                       placeholder="ユーザーIDを入力"
                       required
                       disabled={formState.isLoading}
@@ -313,7 +313,7 @@ export default function LoginPage() {
                       type={formState.showPassword ? "text" : "password"}
                       value={formState.password}
                       onChange={handlePasswordChange}
-                      className={`input-smugmug pr-10 ${formState.validationErrors.password ? 'border-red-500 focus:border-red-500' : 'focus:border-blue-500'}`}
+                      className={`input-smugmug pr-10 ${formState.validationErrors.password ? 'border-red-500 focus:border-red-500' : 'focus:border-black'}`}
                       placeholder="••••••••"
                       required
                       disabled={formState.isLoading}
@@ -393,7 +393,7 @@ export default function LoginPage() {
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="text-center mt-2 text-sm text-orange-600"
+                    className="text-center mt-2 text-sm text-gray-600"
                     id="login-attempts"
                   >
                     ログイン試行回数: {formState.loginAttempts}/5

@@ -48,7 +48,7 @@ export default function InvitePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-orange-100 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-white flex items-center justify-center p-6">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -61,7 +61,7 @@ export default function InvitePage() {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-            className="inline-flex items-center justify-center w-20 h-20 bg-primary-500 rounded-full mb-4 shadow-lg"
+            className="inline-flex items-center justify-center w-20 h-20 bg-black rounded-full mb-4 shadow-lg"
           >
             <Gift className="w-10 h-10 text-white" />
           </motion.div>
@@ -90,7 +90,7 @@ export default function InvitePage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 }}
-          className="card-cute p-8"
+          className="smugmug-card p-8"
         >
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
@@ -123,7 +123,7 @@ export default function InvitePage() {
             <motion.button
               type="submit"
               disabled={isLoading}
-              className="btn-primary w-full touch-target"
+              className="smugmug-button w-full"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
@@ -151,7 +151,7 @@ export default function InvitePage() {
             </p>
             <motion.button
               onClick={() => router.push('/login')}
-              className="text-primary-500 hover:text-primary-600 font-medium text-sm transition-colors"
+              className="text-gray-700 hover:text-gray-900 font-medium text-sm transition-colors"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >

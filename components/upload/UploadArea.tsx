@@ -124,7 +124,7 @@ export default function UploadArea({
             <motion.div
               animate={isDragActive ? { y: -10 } : { y: 0 }}
               transition={{ repeat: isDragActive ? Infinity : 0, repeatType: "reverse", duration: 0.6 }}
-              className="w-16 h-16 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center shadow-lg"
+              className="w-16 h-16 bg-black rounded-full flex items-center justify-center shadow-lg"
             >
               <Upload className="w-8 h-8 text-white" />
             </motion.div>
@@ -185,10 +185,10 @@ export default function UploadArea({
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 20 }}
-                  className="flex items-center space-x-3 p-3 bg-white/80 backdrop-blur-sm rounded-2xl border border-pink-100"
+                  className="flex items-center space-x-3 p-3 bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-200"
                 >
                   {/* プレビュー */}
-                  <div className="w-12 h-12 rounded-xl overflow-hidden bg-gradient-to-br from-pink-100 to-purple-100 flex-shrink-0">
+                  <div className="w-12 h-12 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0">
                     {getFileType(uploadFile.file) === 'image' ? (
                       <div
                         style={{ backgroundImage: `url(${uploadFile.preview})` }}
@@ -198,7 +198,7 @@ export default function UploadArea({
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
-                        <Video className="w-6 h-6 text-purple-500" />
+                        <Video className="w-6 h-6 text-gray-500" />
                       </div>
                     )}
                   </div>
@@ -221,7 +221,7 @@ export default function UploadArea({
                     {uploadFile.status === 'uploading' && (
                       <div className="mt-1 w-full bg-gray-200 rounded-full h-1.5">
                         <motion.div
-                          className="bg-gradient-to-r from-pink-400 to-purple-500 h-1.5 rounded-full"
+                          className="bg-black h-1.5 rounded-full"
                           initial={{ width: 0 }}
                           animate={{ width: `${uploadFile.progress}%` }}
                           transition={{ duration: 0.3 }}
