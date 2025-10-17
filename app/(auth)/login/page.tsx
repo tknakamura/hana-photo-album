@@ -261,7 +261,7 @@ export default function LoginPage() {
                   <label 
                     htmlFor="username" 
                     className="block text-sm font-semibold text-gray-900 mb-3 uppercase tracking-wide"
-                    aria-describedby={validationErrors.username ? "username-error" : undefined}
+                    aria-describedby={formState.validationErrors.username ? "username-error" : undefined}
                   >
                     ユーザーID
                   </label>
@@ -302,7 +302,7 @@ export default function LoginPage() {
                   <label 
                     htmlFor="password" 
                     className="block text-sm font-semibold text-gray-900 mb-3 uppercase tracking-wide"
-                    aria-describedby={validationErrors.password ? "password-error" : undefined}
+                    aria-describedby={formState.validationErrors.password ? "password-error" : undefined}
                   >
                     パスワード
                   </label>
