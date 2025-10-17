@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { Upload, Camera, LogOut, Menu, Grid, List } from 'lucide-react'
+import { Upload, Camera, LogOut, Menu, Grid, List, User } from 'lucide-react'
 import PhotoGrid from '@/components/gallery/PhotoGrid'
 import PhotoModal from '@/components/gallery/PhotoModal'
 import { getCurrentUser, logout as authLogout } from '@/lib/auth'
@@ -121,7 +121,7 @@ export default function GalleryPage() {
         <div className="mobile-container py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center">
                 <Camera className="w-5 h-5 text-white" />
               </div>
               <div>

@@ -12,9 +12,9 @@ html {
 }
 
 body {
-  background: linear-gradient(135deg, #fdf2f8 0%, #f3e8ff 50%, #dbeafe 100%);
+  background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 50%, #fed7aa 100%);
   min-height: 100vh;
-  color: #1f2937;
+  color: #2c1810;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -44,28 +44,28 @@ body {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #f472b6 0%, #a855f7 100%);
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
   color: white;
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, #ec4899 0%, #9333ea 100%);
+  background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
 }
 
 .btn-secondary {
-  background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
-  color: white;
+  background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%);
+  color: #2c1810;
 }
 
 .btn-secondary:hover {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  background: linear-gradient(135deg, #fdba74 0%, #fb923c 100%);
 }
 
 .btn-ghost {
   background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(8px);
-  color: #374151;
-  border: 1px solid #fbcfe8;
+  color: #2c1810;
+  border: 1px solid #fed7aa;
 }
 
 .btn-ghost:hover {
@@ -74,11 +74,11 @@ body {
 
 /* カードスタイル */
 .card-cute {
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(8px);
-  border-radius: 1.5rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  border: 1px solid #fbcfe8;
+  border-radius: 2rem;
+  box-shadow: 0 10px 25px -5px rgba(249, 115, 22, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border: 1px solid #fed7aa;
   transition: all 0.3s ease;
 }
 
@@ -90,23 +90,24 @@ body {
 /* 入力フィールドスタイル */
 .input-cute {
   width: 100%;
-  padding: 0.75rem 1rem;
-  border-radius: 1rem;
-  border: 2px solid #fbcfe8;
-  background: rgba(255, 255, 255, 0.8);
+  padding: 1rem 1.25rem;
+  border-radius: 1.5rem;
+  border: 2px solid #fed7aa;
+  background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(8px);
-  color: #1f2937;
+  color: #2c1810;
   transition: all 0.3s ease;
+  font-size: 1rem;
 }
 
 .input-cute:focus {
-  border-color: #f472b6;
-  box-shadow: 0 0 0 4px rgba(244, 114, 182, 0.1);
+  border-color: #f97316;
+  box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.1);
   outline: none;
 }
 
 .input-cute::placeholder {
-  color: #9ca3af;
+  color: #a18072;
 }
 
 /* モバイル最適化 */
@@ -135,8 +136,8 @@ body {
   z-index: 50;
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid #fbcfe8;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  border-bottom: 1px solid #fed7aa;
+  box-shadow: 0 1px 3px 0 rgba(249, 115, 22, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 }
 
 /* タッチフレンドリーなサイズ */
@@ -154,7 +155,7 @@ body {
 .loading-dots > div {
   width: 0.5rem;
   height: 0.5rem;
-  background-color: #f472b6;
+  background-color: #f97316;
   border-radius: 50%;
   animation: bounce 1s infinite;
 }
@@ -200,12 +201,12 @@ body {
 .photo-item {
   position: relative;
   aspect-ratio: 1;
-  border-radius: 1rem;
+  border-radius: 1.5rem;
   overflow: hidden;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 6px -1px rgba(249, 115, 22, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   transition: all 0.3s ease;
   transform: scale(1);
-  background: linear-gradient(135deg, #fce7f3 0%, #e9d5ff 100%);
+  background: linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%);
 }
 
 .photo-item:hover {
@@ -244,22 +245,22 @@ body {
 
 /* アップロードエリア */
 .upload-area {
-  border: 2px dashed #f9a8d4;
-  border-radius: 1.5rem;
+  border: 2px dashed #fdba74;
+  border-radius: 2rem;
   transition: all 0.3s ease;
-  background: linear-gradient(135deg, #fdf2f8 0%, #faf5ff 100%);
+  background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
 }
 
 .upload-area:hover {
-  border-color: #f472b6;
-  background: linear-gradient(135deg, #fce7f3 0%, #f3e8ff 100%);
+  border-color: #f97316;
+  background: linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%);
 }
 
 .upload-area.dragover {
-  border-color: #ec4899;
-  background: linear-gradient(135deg, #fce7f3 0%, #f3e8ff 100%);
+  border-color: #ea580c;
+  background: linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%);
   transform: scale(1.05);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 15px -3px rgba(249, 115, 22, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 /* ユーティリティクラス */
