@@ -143,6 +143,7 @@ export default function GalleryPage() {
 
   return (
     <div className="min-h-screen bg-orange-100 relative" style={{ paddingBottom: '64px' }}>
+      <div className="w-full max-w-sm mx-auto" style={{ maxWidth: '428px' }}>
       {/* SmugMug風ヘッダー */}
       <motion.header
         initial={{ y: -100 }}
@@ -205,6 +206,19 @@ export default function GalleryPage() {
           </>
         )}
       </main>
+
+      <AnimatePresence>
+        {isModalOpen && selectedPhoto && (
+          <PhotoModal 
+            photo={selectedPhoto} 
+            photos={photos}
+            isOpen={isModalOpen}
+            onClose={handleCloseModal} 
+            onNavigate={handleNavigate}
+          />
+        )}
+      </AnimatePresence>
+      </div>
 
       {/* ボトムタブ */}
       <div 
@@ -277,18 +291,6 @@ export default function GalleryPage() {
           </motion.button>
         </div>
       </div>
-
-      <AnimatePresence>
-        {isModalOpen && selectedPhoto && (
-          <PhotoModal 
-            photo={selectedPhoto} 
-            photos={photos}
-            isOpen={isModalOpen}
-            onClose={handleCloseModal} 
-            onNavigate={handleNavigate}
-          />
-        )}
-      </AnimatePresence>
     </div>
   )
 }

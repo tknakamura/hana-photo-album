@@ -212,7 +212,7 @@ export default function LoginPage() {
     <div className="min-h-screen relative">
       <BackgroundVideo />
       <div className="relative z-10 min-h-screen flex items-center justify-center px-6">
-        <div className="w-full max-w-lg mx-auto">
+        <div className="w-full max-w-sm mx-auto" style={{ maxWidth: '428px' }}>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
