@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { createClient } from '@/lib/supabase/client'
+// import { createClient } from '@/lib/supabase/client' // 不要になったためコメントアウト
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Heart, Camera, Sparkles } from 'lucide-react'
@@ -13,7 +13,6 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const router = useRouter()
-  const supabase = createClient()
 
   // 既にログインしている場合はギャラリーにリダイレクト
   useEffect(() => {
@@ -27,59 +26,42 @@ export default function LoginPage() {
     checkAuth()
   }, [router])
 
-  const testDatabaseConnection = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('users')
-        .select('username, name, role')
-        .limit(5)
-      
-      console.log('Database test result:', { data, error })
-      if (data) {
-        console.log('Available users:', data)
-      }
-    } catch (err) {
-      console.error('Database connection test failed:', err)
-    }
-  }
+  // データベース接続テストは不要になったため削除
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
     setError('')
 
-    // データベース接続テスト
-    await testDatabaseConnection()
-
     try {
       console.log('Attempting login with:', { username, password })
       
-      // ユーザー認証
-      const { data: userData, error: userError } = await supabase
-        .from('users')
-        .select('*')
-        .eq('username', username)
-        .eq('password_hash', password)
-        .single()
+      // 新しいAPIエンドポイントを使用してログイン
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      })
 
-      console.log('Login result:', { userData, userError })
+      const result = await response.json()
+      console.log('Login result:', result)
 
-      if (userError) {
-        console.error('Database error:', userError)
-        setError(`データベースエラー: ${userError.message}`)
+      if (!response.ok) {
+        setError(result.error || 'ログインに失敗しました。')
         setIsLoading(false)
         return
       }
 
-      if (!userData) {
-        console.log('No user found with these credentials')
+      if (!result.success || !result.user) {
         setError('ログインに失敗しました。IDとパスワードを確認してください。')
         setIsLoading(false)
         return
       }
 
       // セッションにユーザー情報を保存
-      localStorage.setItem('user', JSON.stringify(userData))
+      localStorage.setItem('user', JSON.stringify(result.user))
       
       console.log('Login successful, redirecting to gallery...')
       

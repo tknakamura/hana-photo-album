@@ -24,16 +24,32 @@ export default function BackgroundVideo() {
         muted
         playsInline
         className="absolute inset-0 w-full h-full object-cover"
-        onLoadedData={() => setIsVideoLoaded(true)}
-        style={{ display: isVideoLoaded ? 'block' : 'none' }}
+        onLoadedData={() => {
+          console.log('Video loaded successfully')
+          setIsVideoLoaded(true)
+        }}
+        onError={(e) => {
+          console.error('Video load error:', e)
+          setIsVideoLoaded(false)
+        }}
+        style={{ 
+          display: isVideoLoaded ? 'block' : 'none',
+          opacity: isVideoLoaded ? 1 : 0,
+          transition: 'opacity 0.5s ease-in-out'
+        }}
       >
         <source src="/background-video.mp4" type="video/mp4" />
+        お使いのブラウザは動画をサポートしていません。
       </video>
 
       {/* フォールバック背景 */}
       <div 
         className="absolute inset-0 w-full h-full bg-gradient-to-br from-orange-50 to-orange-100"
-        style={{ display: isVideoLoaded ? 'none' : 'block' }}
+        style={{ 
+          display: isVideoLoaded ? 'none' : 'block',
+          opacity: isVideoLoaded ? 0 : 1,
+          transition: 'opacity 0.5s ease-in-out'
+        }}
       />
 
       {/* ぼかし効果とオーバーレイ */}
