@@ -15,12 +15,33 @@ export default function LoginPage() {
   const router = useRouter()
   const supabase = createClient()
 
+  const testDatabaseConnection = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .select('username, name, role')
+        .limit(5)
+      
+      console.log('Database test result:', { data, error })
+      if (data) {
+        console.log('Available users:', data)
+      }
+    } catch (err) {
+      console.error('Database connection test failed:', err)
+    }
+  }
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
     setError('')
 
+    // データベース接続テスト
+    await testDatabaseConnection()
+
     try {
+      console.log('Attempting login with:', { username, password })
+      
       // ユーザー認証
       const { data: userData, error: userError } = await supabase
         .from('users')
@@ -29,14 +50,17 @@ export default function LoginPage() {
         .eq('password_hash', password)
         .single()
 
+      console.log('Login result:', { userData, userError })
+
       if (userError) {
         console.error('Database error:', userError)
-        setError('データベースエラーが発生しました。')
+        setError(`データベースエラー: ${userError.message}`)
         setIsLoading(false)
         return
       }
 
       if (!userData) {
+        console.log('No user found with these credentials')
         setError('ログインに失敗しました。IDとパスワードを確認してください。')
         setIsLoading(false)
         return
