@@ -93,10 +93,10 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen relative login-page">
+    <div className="min-h-screen relative">
       <BackgroundVideo />
-      <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
-        <div className="w-full max-w-md">
+      <div className="relative z-10 min-h-screen flex items-center justify-center p-6">
+        <div className="w-full max-w-md mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -104,7 +104,7 @@ export default function LoginPage() {
             className="w-full"
           >
             {/* ヘッダー */}
-            <div className="text-center mb-8 px-4">
+            <div className="text-center mb-8 px-6">
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
@@ -138,7 +138,7 @@ export default function LoginPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8 }}
-              className="card-cute p-8 mx-4"
+              className="card-cute p-8 mx-6"
             >
           <form onSubmit={handleLogin} className="space-y-6">
             <div>
@@ -223,7 +223,7 @@ export default function LoginPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1.2 }}
-              className="text-center mt-8 px-4"
+              className="text-center mt-8 px-6"
             >
               <div className="flex items-center justify-center space-x-2 text-gray-400">
                 <Sparkles className="w-4 h-4 animate-pulse" />
