@@ -1,11 +1,12 @@
 -- 完全なデータベースセットアップ
 
 -- 既存のテーブルを削除（必要に応じて）
-DROP TABLE IF EXISTS photos CASCADE;
-DROP TABLE IF EXISTS users CASCADE;
+-- 注意: このコマンドは既存のデータを削除します
+-- DROP TABLE IF EXISTS photos CASCADE;
+-- DROP TABLE IF EXISTS users CASCADE;
 
 -- ユーザーテーブル（ID/パスワード認証用）
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   username TEXT UNIQUE NOT NULL,
   password_hash TEXT NOT NULL,
@@ -18,7 +19,7 @@ CREATE TABLE users (
 );
 
 -- 写真テーブル
-CREATE TABLE photos (
+CREATE TABLE IF NOT EXISTS photos (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   file_path TEXT NOT NULL,
   thumbnail_path TEXT,
@@ -32,15 +33,22 @@ CREATE TABLE photos (
 );
 
 -- インデックス
-CREATE INDEX idx_photos_taken_at ON photos(taken_at DESC);
-CREATE INDEX idx_photos_uploaded_at ON photos(uploaded_at DESC);
-CREATE INDEX idx_users_username ON users(username);
+CREATE INDEX IF NOT EXISTS idx_photos_taken_at ON photos(taken_at DESC);
+CREATE INDEX IF NOT EXISTS idx_photos_uploaded_at ON photos(uploaded_at DESC);
+CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
 
 -- RLS (Row Level Security) を有効化
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE photos ENABLE ROW LEVEL SECURITY;
 
--- ユーザーポリシー
+-- ユーザーポリシー（既存のポリシーを削除してから作成）
+DROP POLICY IF EXISTS "Users can view all users" ON users;
+DROP POLICY IF EXISTS "Users can update own profile" ON users;
+DROP POLICY IF EXISTS "Authenticated users can view all photos" ON photos;
+DROP POLICY IF EXISTS "Authenticated users can insert photos" ON photos;
+DROP POLICY IF EXISTS "Authenticated users can update own photos" ON photos;
+DROP POLICY IF EXISTS "Authenticated users can delete own photos" ON photos;
+
 CREATE POLICY "Users can view all users" ON users
   FOR SELECT USING (true);
 
@@ -64,7 +72,12 @@ CREATE POLICY "Authenticated users can delete own photos" ON photos
 INSERT INTO storage.buckets (id, name, public) VALUES ('photos', 'photos', true)
 ON CONFLICT (id) DO NOTHING;
 
--- ストレージポリシー
+-- ストレージポリシー（既存のポリシーを削除してから作成）
+DROP POLICY IF EXISTS "Authenticated users can upload photos" ON storage.objects;
+DROP POLICY IF EXISTS "Authenticated users can view photos" ON storage.objects;
+DROP POLICY IF EXISTS "Authenticated users can update own photos" ON storage.objects;
+DROP POLICY IF EXISTS "Authenticated users can delete own photos" ON storage.objects;
+
 CREATE POLICY "Authenticated users can upload photos" ON storage.objects
   FOR INSERT WITH CHECK (bucket_id = 'photos');
 
