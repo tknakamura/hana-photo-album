@@ -12,6 +12,7 @@ interface UploadFile {
   id: string
   preview: string
   metadata?: PhotoMetadata
+  caption?: string
   status: 'pending' | 'uploading' | 'success' | 'error'
   progress: number
   error?: string
@@ -21,6 +22,7 @@ interface UploadAreaProps {
   onUpload: (files: UploadFile[]) => void
   maxFiles?: number
   maxSize?: number // in bytes
+  acceptedTypes?: string[]
   className?: string
 }
 
@@ -28,6 +30,7 @@ export default function UploadArea({
   onUpload, 
   maxFiles = 10, 
   maxSize = 50 * 1024 * 1024, // 50MB
+  acceptedTypes = ['image/*', 'video/*'],
   className 
 }: UploadAreaProps) {
   const [uploadFiles, setUploadFiles] = useState<UploadFile[]>([])

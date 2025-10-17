@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { createClient } from '@/lib/supabase/client'
+// import { createClient } from '@/lib/supabase/client' // 不要になったためコメントアウト
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Upload, Camera, LogOut, Menu, Grid, List } from 'lucide-react'
@@ -32,7 +32,6 @@ export default function GalleryPage() {
   const [, setCurrentUser] = useState(getCurrentUser())
   
   const router = useRouter()
-  const supabase = createClient()
 
   // 認証チェック
   useEffect(() => {
@@ -60,23 +59,21 @@ export default function GalleryPage() {
 
   const fetchPhotos = useCallback(async () => {
     try {
-      const { data, error } = await supabase
-        .from('photos')
-        .select('*')
-        .order('taken_at', { ascending: sortOrder === 'oldest' })
+      const response = await fetch('/api/photos')
+      const result = await response.json()
 
-      if (error) {
-        console.error('Error fetching photos:', error)
+      if (!response.ok) {
+        console.error('Error fetching photos:', result.error)
         return
       }
 
-      setPhotos(data || [])
+      setPhotos(result.photos || [])
     } catch (error) {
       console.error('Error:', error)
     } finally {
       setLoading(false)
     }
-  }, [supabase, sortOrder])
+  }, [])
 
   useEffect(() => {
     fetchPhotos()
