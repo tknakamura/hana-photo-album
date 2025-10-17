@@ -17,10 +17,24 @@ export default function LoginPage() {
   // 既にログインしている場合はギャラリーにリダイレクト
   useEffect(() => {
     const checkAuth = () => {
-      const user = localStorage.getItem('user')
-      if (user) {
-        console.log('User already logged in, redirecting to gallery')
-        router.push('/gallery')
+      try {
+        const user = localStorage.getItem('user')
+        console.log('Login: Checking existing auth, user data:', user)
+        
+        if (user) {
+          const parsedUser = JSON.parse(user)
+          if (parsedUser && parsedUser.username) {
+            console.log('Login: User already logged in, redirecting to gallery')
+            window.location.href = '/gallery' // 確実なリダイレクト
+            return
+          } else {
+            console.log('Login: Invalid user data, clearing localStorage')
+            localStorage.removeItem('user')
+          }
+        }
+      } catch (error) {
+        console.error('Login: Auth check error:', error)
+        localStorage.removeItem('user')
       }
     }
     checkAuth()

@@ -36,19 +36,28 @@ export default function GalleryPage() {
   // 認証チェック
   useEffect(() => {
     const checkAuth = () => {
-      const user = localStorage.getItem('user')
-      if (!user) {
-        console.log('No user found, redirecting to login')
-        router.push('/login')
-        return
-      }
-      
       try {
+        const user = localStorage.getItem('user')
+        console.log('Gallery: Checking auth, user data:', user)
+        
+        if (!user) {
+          console.log('Gallery: No user found, redirecting to login')
+          router.push('/login')
+          return
+        }
+        
         const parsedUser = JSON.parse(user)
+        if (!parsedUser || !parsedUser.username) {
+          console.log('Gallery: Invalid user data, clearing localStorage')
+          localStorage.removeItem('user')
+          router.push('/login')
+          return
+        }
+        
         setCurrentUser(parsedUser)
-        console.log('User authenticated:', parsedUser.username)
+        console.log('Gallery: User authenticated:', parsedUser.username)
       } catch (error) {
-        console.error('Invalid user data:', error)
+        console.error('Gallery: Auth check error:', error)
         localStorage.removeItem('user')
         router.push('/login')
       }
