@@ -18,6 +18,11 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* ログインページ専用の背景設定 */
+body.login-page {
+  background: transparent;
+}
+
 /* モバイルでのタッチ操作を最適化 */
 * {
   -webkit-tap-highlight-color: transparent;
@@ -91,6 +96,8 @@ body {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   border: 1px solid #e8eaed;
   transition: all 0.2s ease;
+  margin: 0 auto;
+  max-width: 100%;
 }
 
 .card-cute:hover {

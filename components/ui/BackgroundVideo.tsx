@@ -6,31 +6,41 @@ export default function BackgroundVideo() {
   const [isLoaded, setIsLoaded] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
 
-  useEffect(() => {
-    // WebPがサポートされていない場合のフォールバック
-    const checkWebPSupport = () => {
-      const canvas = document.createElement('canvas')
-      canvas.width = 1
-      canvas.height = 1
-      return canvas.toDataURL('image/webp').indexOf('data:image/webp') === 0
-    }
+  console.log('BackgroundVideo component rendered')
 
-    if (!checkWebPSupport() && videoRef.current) {
-      // WebPがサポートされていない場合はMP4を表示
-      const img = document.querySelector('img[src="/background-animation.webp"]') as HTMLImageElement
-      if (img) {
-        img.style.display = 'none'
-      }
-      if (videoRef.current) {
-        videoRef.current.style.display = 'block'
-        videoRef.current.play()
-      }
+  useEffect(() => {
+    // 動画の自動再生を確実にする
+    if (videoRef.current) {
+      videoRef.current.play().catch((error) => {
+        console.log('Video autoplay failed:', error)
+        // 自動再生が失敗した場合はWebP画像を表示
+        const img = document.querySelector('img[src="/background-animation.webp"]') as HTMLImageElement
+        if (img) {
+          img.style.display = 'block'
+        }
+        if (videoRef.current) {
+          videoRef.current.style.display = 'none'
+        }
+      })
     }
   }, [])
 
   return (
     <div className="fixed inset-0 -z-10 overflow-hidden">
-      {/* WebP背景 */}
+      {/* MP4動画背景（メイン） */}
+      <video
+        ref={videoRef}
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover"
+        onLoadedData={() => setIsLoaded(true)}
+      >
+        <source src="/background-video.mp4" type="video/mp4" />
+      </video>
+      
+      {/* フォールバック: WebP静止画 */}
       <div className="absolute inset-0">
         <img
           src="/background-animation.webp"
@@ -39,19 +49,6 @@ export default function BackgroundVideo() {
           onLoad={() => setIsLoaded(true)}
         />
       </div>
-      
-      {/* フォールバック: MP4 */}
-      <video
-        ref={videoRef}
-        autoPlay
-        loop
-        muted
-        playsInline
-        className="absolute inset-0 w-full h-full object-cover hidden"
-        onLoadedData={() => setIsLoaded(true)}
-      >
-        <source src="/background-video.mp4" type="video/mp4" />
-      </video>
 
       {/* 背景のみぼかし効果（顔は鮮明） */}
       <div className="absolute inset-0 backdrop-blur-md bg-white/30" />

@@ -58,13 +58,13 @@ export default function LoginPage() {
   return (
     <>
       <BackgroundVideo />
-      <div className="min-h-screen flex items-center justify-center mobile-container py-8 bg-transparent">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="w-full max-w-md"
-      >
+      <div className="min-h-screen flex items-center justify-center p-4 bg-transparent relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="w-full max-w-md mx-auto"
+        >
         {/* ヘッダー */}
         <div className="text-center mb-8">
           <motion.div
@@ -100,7 +100,7 @@ export default function LoginPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 }}
-          className="card-cute p-8"
+          className="card-cute p-8 mx-4 sm:mx-0"
         >
           <form onSubmit={handleLogin} className="space-y-6">
             <div>
@@ -185,7 +185,7 @@ export default function LoginPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.2 }}
-          className="text-center mt-8"
+          className="text-center mt-8 px-4"
         >
           <div className="flex items-center justify-center space-x-2 text-gray-400">
             <Sparkles className="w-4 h-4 animate-pulse" />
