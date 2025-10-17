@@ -17,7 +17,8 @@ export async function POST(request: NextRequest) {
     }
 
     // パスワードハッシュを除外してユーザー情報を返す
-    const { password_hash: _, ...userWithoutPassword } = user
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password_hash, ...userWithoutPassword } = user
 
     return NextResponse.json({ 
       success: true, 

@@ -24,9 +24,19 @@ export interface PhotoMetadata {
   }
 }
 
-export async function extractPhotoMetadata(file: File): Promise<PhotoMetadata> {
+export async function extractPhotoMetadata(input: File | Buffer): Promise<PhotoMetadata> {
   try {
-    const arrayBuffer = await file.arrayBuffer()
+    let arrayBuffer: ArrayBuffer
+    let lastModified: number
+    
+    if (input instanceof File) {
+      arrayBuffer = await input.arrayBuffer()
+      lastModified = input.lastModified
+    } else {
+      arrayBuffer = input.buffer.slice(input.byteOffset, input.byteOffset + input.byteLength)
+      lastModified = Date.now()
+    }
+    
     const metadata = await exifr.parse(arrayBuffer, {
       gps: true,
       exif: true,
@@ -41,13 +51,13 @@ export async function extractPhotoMetadata(file: File): Promise<PhotoMetadata> {
 
     if (!metadata) {
       return {
-        takenAt: new Date(file.lastModified),
+        takenAt: new Date(lastModified),
         dimensions: { width: 0, height: 0 }
       }
     }
 
     const result: PhotoMetadata = {
-      takenAt: metadata.DateTimeOriginal || metadata.DateTime || new Date(file.lastModified),
+      takenAt: metadata.DateTimeOriginal || metadata.DateTime || new Date(lastModified),
       dimensions: {
         width: metadata.ImageWidth || 0,
         height: metadata.ImageHeight || 0
@@ -86,7 +96,7 @@ export async function extractPhotoMetadata(file: File): Promise<PhotoMetadata> {
   } catch (error) {
     console.error('Error extracting EXIF data:', error)
     return {
-      takenAt: new Date(file.lastModified),
+      takenAt: new Date(lastModified),
       dimensions: { width: 0, height: 0 }
     }
   }

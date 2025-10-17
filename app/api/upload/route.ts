@@ -50,8 +50,8 @@ export async function POST(request: NextRequest) {
       try {
         const exifData = await extractPhotoMetadata(buffer)
         metadata = exifData
-        if (exifData.taken_at) {
-          takenAt = new Date(exifData.taken_at)
+        if (exifData.takenAt) {
+          takenAt = exifData.takenAt
         }
       } catch (error) {
         console.warn('EXIFデータの抽出に失敗:', error)
