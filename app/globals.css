@@ -570,7 +570,7 @@ button, input, select, textarea, a {
 .smugmug-card {
   background: transparent;
   backdrop-filter: none;
-  border: 2px solid #FFFFFF;
+  border: none;
   border-radius: 16px;
   transition: all 0.3s ease;
   overflow: hidden;
@@ -580,7 +580,6 @@ button, input, select, textarea, a {
 .smugmug-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
-  border-color: #FFFFFF;
   background: transparent;
 }
 
