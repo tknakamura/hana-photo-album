@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 // import { createClient } from '@/lib/supabase/client' // 不要になったためコメントアウト
 import { useRouter } from 'next/navigation'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Upload, Camera, LogOut, Menu, Grid, List, User as UserIcon } from 'lucide-react'
 import PhotoGrid from '@/components/gallery/PhotoGrid'
 import PhotoModal from '@/components/gallery/PhotoModal'
@@ -26,7 +26,7 @@ export default function GalleryPage() {
   const [loading, setLoading] = useState(true)
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest')
+  const [sortOrder] = useState<'newest' | 'oldest'>('newest')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [showMenu, setShowMenu] = useState(false)
   const [, setCurrentUser] = useState<User | null>(getCurrentUser())

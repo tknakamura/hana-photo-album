@@ -1,18 +1,33 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 // import { createClient } from '@/lib/supabase/client' // 不要になったためコメントアウト
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { Heart, Camera, Sparkles } from 'lucide-react'
+import { Heart, Camera, Sparkles, Eye, EyeOff, AlertCircle, CheckCircle } from 'lucide-react'
 import BackgroundVideo from '@/components/ui/BackgroundVideo'
+import { LoginFormState, ValidationErrors, LoginResponse } from '@/types/auth'
 
 export default function LoginPage() {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [formState, setFormState] = useState<LoginFormState>({
+    username: '',
+    password: '',
+    isLoading: false,
+    error: '',
+    showPassword: false,
+    isValidating: false,
+    validationErrors: {},
+    loginAttempts: 0
+  })
+  
   const router = useRouter()
+  const usernameRef = useRef<HTMLInputElement>(null)
+  const passwordRef = useRef<HTMLInputElement>(null)
+  
+  // フォーム状態の更新ヘルパー
+  const updateFormState = (updates: Partial<LoginFormState>) => {
+    setFormState(prev => ({ ...prev, ...updates }))
+  }
 
   // 既にログインしている場合はギャラリーにリダイレクト
   useEffect(() => {
@@ -42,38 +57,112 @@ export default function LoginPage() {
 
   // データベース接続テストは不要になったため削除
 
-  const handleLogin = async (e: React.FormEvent) => {
+  // 入力検証関数
+  const validateInputs = (): boolean => {
+    const errors: ValidationErrors = {}
+    
+    if (!formState.username.trim()) {
+      errors.username = 'ユーザーIDを入力してください'
+    } else if (formState.username.length < 3) {
+      errors.username = 'ユーザーIDは3文字以上で入力してください'
+    } else if (!/^[a-zA-Z0-9_-]+$/.test(formState.username)) {
+      errors.username = 'ユーザーIDは英数字、ハイフン、アンダースコアのみ使用できます'
+    }
+    
+    if (!formState.password) {
+      errors.password = 'パスワードを入力してください'
+    } else if (formState.password.length < 6) {
+      errors.password = 'パスワードは6文字以上で入力してください'
+    }
+    
+    updateFormState({ validationErrors: errors })
+    return Object.keys(errors).length === 0
+  }
+
+  // レート制限チェック
+  const checkRateLimit = (): boolean => {
+    const attempts = parseInt(localStorage.getItem('loginAttempts') || '0')
+    const lastAttempt = localStorage.getItem('lastLoginAttempt')
+    const now = Date.now()
+    
+    if (lastAttempt && now - parseInt(lastAttempt) < 300000) { // 5分間
+      if (attempts >= 5) {
+        updateFormState({ error: 'ログイン試行回数が上限に達しました。5分後に再試行してください。' })
+        return false
+      }
+    } else {
+      // 5分経過した場合はカウンターリセット
+      localStorage.setItem('loginAttempts', '0')
+      updateFormState({ loginAttempts: 0 })
+    }
+    
+    return true
+  }
+
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault()
-    setIsLoading(true)
-    setError('')
+    
+    // 入力検証
+    if (!validateInputs()) {
+      return
+    }
+    
+    // レート制限チェック
+    if (!checkRateLimit()) {
+      return
+    }
+    
+    updateFormState({ 
+      isLoading: true, 
+      error: '', 
+      validationErrors: {} 
+    })
 
     try {
-      console.log('Attempting login with:', { username, password })
+      console.log('Attempting login with:', { username: formState.username })
       
       // 新しいAPIエンドポイントを使用してログイン
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest', // CSRF対策
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ 
+          username: formState.username, 
+          password: formState.password 
+        }),
       })
 
-      const result = await response.json()
+      const result: LoginResponse = await response.json()
       console.log('Login result:', result)
 
       if (!response.ok) {
-        setError(result.error || 'ログインに失敗しました。')
-        setIsLoading(false)
+        // ログイン試行回数を増加
+        const attempts = parseInt(localStorage.getItem('loginAttempts') || '0') + 1
+        localStorage.setItem('loginAttempts', attempts.toString())
+        localStorage.setItem('lastLoginAttempt', Date.now().toString())
+        
+        updateFormState({ 
+          error: result.error || 'ログインに失敗しました。',
+          isLoading: false,
+          loginAttempts: attempts
+        })
         return
       }
 
       if (!result.success || !result.user) {
-        setError('ログインに失敗しました。IDとパスワードを確認してください。')
-        setIsLoading(false)
+        updateFormState({ 
+          error: 'ログインに失敗しました。IDとパスワードを確認してください。',
+          isLoading: false
+        })
         return
       }
 
+      // ログイン成功時はカウンターリセット
+      localStorage.removeItem('loginAttempts')
+      localStorage.removeItem('lastLoginAttempt')
+      
       // セッションにユーザー情報を保存
       localStorage.setItem('user', JSON.stringify(result.user))
       
@@ -83,9 +172,39 @@ export default function LoginPage() {
       window.location.href = '/gallery'
     } catch (error) {
       console.error('Login error:', error)
-      setError('予期しないエラーが発生しました。')
-    } finally {
-      setIsLoading(false)
+      updateFormState({ 
+        error: '予期しないエラーが発生しました。ネットワーク接続を確認してください。',
+        isLoading: false
+      })
+    }
+  }
+
+  // リアルタイム検証
+  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const value = e.target.value
+    updateFormState({ username: value })
+    
+    if (formState.validationErrors.username) {
+      updateFormState({ 
+        validationErrors: { 
+          ...formState.validationErrors, 
+          username: '' 
+        }
+      })
+    }
+  }
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const value = e.target.value
+    updateFormState({ password: value })
+    
+    if (formState.validationErrors.password) {
+      updateFormState({ 
+        validationErrors: { 
+          ...formState.validationErrors, 
+          password: '' 
+        }
+      })
     }
   }
 
@@ -139,55 +258,121 @@ export default function LoginPage() {
             >
               <form onSubmit={handleLogin} className="space-y-8">
                 <div>
-                  <label htmlFor="username" className="block text-sm font-semibold text-gray-900 mb-3 uppercase tracking-wide">
+                  <label 
+                    htmlFor="username" 
+                    className="block text-sm font-semibold text-gray-900 mb-3 uppercase tracking-wide"
+                    aria-describedby={validationErrors.username ? "username-error" : undefined}
+                  >
                     ユーザーID
                   </label>
-                  <input
-                    id="username"
-                    type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    className="input-smugmug"
-                    placeholder="ユーザーIDを入力"
-                    required
-                    disabled={isLoading}
-                  />
+                  <div className="relative">
+                    <input
+                      ref={usernameRef}
+                      id="username"
+                      type="text"
+                      value={formState.username}
+                      onChange={handleUsernameChange}
+                      className={`input-smugmug pr-10 ${formState.validationErrors.username ? 'border-red-500 focus:border-red-500' : 'focus:border-blue-500'}`}
+                      placeholder="ユーザーIDを入力"
+                      required
+                      disabled={formState.isLoading}
+                      autoComplete="username"
+                      aria-invalid={!!formState.validationErrors.username}
+                      aria-describedby={formState.validationErrors.username ? "username-error" : undefined}
+                    />
+                    {formState.username && !formState.validationErrors.username && (
+                      <CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-500" />
+                    )}
+                  </div>
+                  {formState.validationErrors.username && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="flex items-center mt-2 text-sm text-red-600"
+                      id="username-error"
+                      role="alert"
+                    >
+                      <AlertCircle className="w-4 h-4 mr-1" />
+                      {formState.validationErrors.username}
+                    </motion.div>
+                  )}
                 </div>
 
                 <div>
-                  <label htmlFor="password" className="block text-sm font-semibold text-gray-900 mb-3 uppercase tracking-wide">
+                  <label 
+                    htmlFor="password" 
+                    className="block text-sm font-semibold text-gray-900 mb-3 uppercase tracking-wide"
+                    aria-describedby={validationErrors.password ? "password-error" : undefined}
+                  >
                     パスワード
                   </label>
-                  <input
-                    id="password"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="input-smugmug"
-                    placeholder="••••••••"
-                    required
-                    disabled={isLoading}
-                  />
+                  <div className="relative">
+                    <input
+                      ref={passwordRef}
+                      id="password"
+                      type={formState.showPassword ? "text" : "password"}
+                      value={formState.password}
+                      onChange={handlePasswordChange}
+                      className={`input-smugmug pr-10 ${formState.validationErrors.password ? 'border-red-500 focus:border-red-500' : 'focus:border-blue-500'}`}
+                      placeholder="••••••••"
+                      required
+                      disabled={formState.isLoading}
+                      autoComplete="current-password"
+                      aria-invalid={!!formState.validationErrors.password}
+                      aria-describedby={formState.validationErrors.password ? "password-error" : undefined}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => updateFormState({ showPassword: !formState.showPassword })}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none focus:text-gray-700"
+                      disabled={formState.isLoading}
+                      aria-label={formState.showPassword ? "パスワードを隠す" : "パスワードを表示"}
+                    >
+                      {formState.showPassword ? (
+                        <EyeOff className="w-5 h-5" />
+                      ) : (
+                        <Eye className="w-5 h-5" />
+                      )}
+                    </button>
+                  </div>
+                  {formState.validationErrors.password && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="flex items-center mt-2 text-sm text-red-600"
+                      id="password-error"
+                      role="alert"
+                    >
+                      <AlertCircle className="w-4 h-4 mr-1" />
+                      {formState.validationErrors.password}
+                    </motion.div>
+                  )}
                 </div>
 
-                {error && (
+                {formState.error && (
                   <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm font-medium"
+                    className="p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm font-medium rounded-r-lg"
+                    role="alert"
+                    aria-live="polite"
                   >
-                    {error}
+                    <div className="flex items-center">
+                      <AlertCircle className="w-5 h-5 mr-2 flex-shrink-0" />
+                      <span>{formState.error}</span>
+                    </div>
                   </motion.div>
                 )}
 
                 <motion.button
                   type="submit"
-                  disabled={isLoading}
-                  className="smugmug-button w-full"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  disabled={formState.isLoading || Object.keys(formState.validationErrors).length > 0}
+                  className="smugmug-button w-full disabled:opacity-50 disabled:cursor-not-allowed"
+                  whileHover={{ scale: formState.isLoading ? 1 : 1.02 }}
+                  whileTap={{ scale: formState.isLoading ? 1 : 0.98 }}
+                  aria-describedby={formState.loginAttempts > 0 ? "login-attempts" : undefined}
                 >
-                  {isLoading ? (
+                  {formState.isLoading ? (
                     <div className="flex items-center justify-center space-x-3">
                       <div className="loading-dots">
                         <div></div>
@@ -203,6 +388,17 @@ export default function LoginPage() {
                     </div>
                   )}
                 </motion.button>
+                
+                {formState.loginAttempts > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="text-center mt-2 text-sm text-orange-600"
+                    id="login-attempts"
+                  >
+                    ログイン試行回数: {formState.loginAttempts}/5
+                  </motion.div>
+                )}
               </form>
 
           <div className="mt-6 text-center">

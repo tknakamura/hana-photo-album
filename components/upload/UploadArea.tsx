@@ -30,7 +30,7 @@ export default function UploadArea({
   onUpload, 
   maxFiles = 10, 
   maxSize = 50 * 1024 * 1024, // 50MB
-  acceptedTypes = ['image/*', 'video/*'],
+  acceptedTypes: _acceptedTypes = ['image/*', 'video/*'],
   className 
 }: UploadAreaProps) {
   const [uploadFiles, setUploadFiles] = useState<UploadFile[]>([])
