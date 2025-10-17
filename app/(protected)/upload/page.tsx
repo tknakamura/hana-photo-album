@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
@@ -8,13 +8,23 @@ import { ArrowLeft, Upload, Camera, Heart } from 'lucide-react'
 import UploadArea, { UploadFile } from '@/components/upload/UploadArea'
 import Button from '@/components/ui/Button'
 import { generateThumbnailPath } from '@/lib/utils'
+import { getCurrentUser } from '@/lib/auth'
 
 export default function UploadPage() {
   const [uploadFiles, setUploadFiles] = useState<UploadFile[]>([])
   const [isUploading, setIsUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
+  const [currentUser, setCurrentUser] = useState(getCurrentUser())
   const router = useRouter()
   const supabase = createClient()
+
+  // 認証チェック
+  useEffect(() => {
+    if (!currentUser) {
+      router.push('/login')
+      return
+    }
+  }, [currentUser, router])
 
   const handleUpload = async () => {
     if (uploadFiles.length === 0) return

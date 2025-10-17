@@ -7,6 +7,7 @@ import { motion } from 'framer-motion'
 import { Upload, Camera, LogOut, Menu, Grid, List } from 'lucide-react'
 import PhotoGrid from '@/components/gallery/PhotoGrid'
 import PhotoModal from '@/components/gallery/PhotoModal'
+import { getCurrentUser, logout as authLogout } from '@/lib/auth'
 
 interface Photo {
   id: string
@@ -28,9 +29,18 @@ export default function GalleryPage() {
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [showMenu, setShowMenu] = useState(false)
+  const [currentUser, setCurrentUser] = useState(getCurrentUser())
   
   const router = useRouter()
   const supabase = createClient()
+
+  // 認証チェック
+  useEffect(() => {
+    if (!currentUser) {
+      router.push('/login')
+      return
+    }
+  }, [currentUser, router])
 
   const fetchPhotos = useCallback(async () => {
     try {
@@ -81,8 +91,9 @@ export default function GalleryPage() {
     setSelectedPhoto(photos[newIndex])
   }
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut()
+  const handleLogout = () => {
+    authLogout()
+    setCurrentUser(null)
     router.push('/login')
   }
 

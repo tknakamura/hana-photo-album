@@ -4,10 +4,10 @@ import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { Heart, Camera, Sparkles } from 'lucide-react'
+import { Heart, Camera, Sparkles, User } from 'lucide-react'
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('')
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
@@ -20,17 +20,25 @@ export default function LoginPage() {
     setError('')
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      })
+      // ユーザー認証
+      const { data: userData, error: userError } = await supabase
+        .from('users')
+        .select('*')
+        .eq('username', username)
+        .eq('password_hash', password)
+        .single()
 
-      if (error) {
-        setError('ログインに失敗しました。メールアドレスとパスワードを確認してください。')
-      } else {
-        router.push('/gallery')
-        router.refresh()
+      if (userError || !userData) {
+        setError('ログインに失敗しました。IDとパスワードを確認してください。')
+        setIsLoading(false)
+        return
       }
+
+      // セッションにユーザー情報を保存
+      localStorage.setItem('user', JSON.stringify(userData))
+      
+      router.push('/gallery')
+      router.refresh()
     } catch {
       setError('予期しないエラーが発生しました。')
     } finally {
@@ -85,16 +93,16 @@ export default function LoginPage() {
         >
           <form onSubmit={handleLogin} className="space-y-6">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                メールアドレス
+              <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
+                ユーザーID
               </label>
               <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                id="username"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 className="input-cute"
-                placeholder="family@example.com"
+                placeholder="tk, kie, yoneko, setsuko"
                 required
                 disabled={isLoading}
               />
@@ -153,16 +161,11 @@ export default function LoginPage() {
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-500">
-              招待リンクをお持ちの方は
+              家族専用のアルバムです
             </p>
-            <motion.button
-              onClick={() => router.push('/invite')}
-              className="text-pink-500 hover:text-pink-600 font-medium text-sm mt-1"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              こちらから登録
-            </motion.button>
+            <p className="text-xs text-gray-400 mt-1">
+              管理者から提供されたIDとパスワードでログインしてください
+            </p>
           </div>
         </motion.div>
 

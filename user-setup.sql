@@ -1,0 +1,77 @@
+-- 既存のテーブルを削除（必要に応じて）
+-- DROP TABLE IF EXISTS family_members CASCADE;
+-- DROP TABLE IF EXISTS photos CASCADE;
+
+-- ユーザーテーブル（ID/パスワード認証用）
+CREATE TABLE users (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  username TEXT UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  name TEXT NOT NULL,
+  role TEXT DEFAULT 'user' CHECK (role IN ('admin', 'user')),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 写真テーブル
+CREATE TABLE photos (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  file_path TEXT NOT NULL,
+  thumbnail_path TEXT,
+  original_filename TEXT NOT NULL,
+  mime_type TEXT NOT NULL,
+  taken_at TIMESTAMP WITH TIME ZONE NOT NULL,
+  uploaded_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  uploaded_by UUID REFERENCES users(id) ON DELETE SET NULL,
+  caption TEXT,
+  metadata JSONB DEFAULT '{}'::jsonb
+);
+
+-- インデックス
+CREATE INDEX idx_photos_taken_at ON photos(taken_at DESC);
+CREATE INDEX idx_photos_uploaded_at ON photos(uploaded_at DESC);
+CREATE INDEX idx_users_username ON users(username);
+
+-- RLS (Row Level Security) を有効化
+ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE photos ENABLE ROW LEVEL SECURITY;
+
+-- ユーザーポリシー
+CREATE POLICY "Users can view all users" ON users
+  FOR SELECT USING (true);
+
+-- 認証されたユーザーは全写真を閲覧可能
+CREATE POLICY "Authenticated users can view all photos" ON photos
+  FOR SELECT USING (true);
+
+CREATE POLICY "Authenticated users can insert photos" ON photos
+  FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "Authenticated users can update own photos" ON photos
+  FOR UPDATE USING (true);
+
+CREATE POLICY "Authenticated users can delete own photos" ON photos
+  FOR DELETE USING (true);
+
+-- ストレージバケットの作成
+INSERT INTO storage.buckets (id, name, public) VALUES ('photos', 'photos', true);
+
+-- ストレージポリシー
+CREATE POLICY "Authenticated users can upload photos" ON storage.objects
+  FOR INSERT WITH CHECK (bucket_id = 'photos');
+
+CREATE POLICY "Authenticated users can view photos" ON storage.objects
+  FOR SELECT USING (bucket_id = 'photos');
+
+CREATE POLICY "Authenticated users can update own photos" ON storage.objects
+  FOR UPDATE USING (bucket_id = 'photos');
+
+CREATE POLICY "Authenticated users can delete own photos" ON storage.objects
+  FOR DELETE USING (bucket_id = 'photos');
+
+-- 初期ユーザーの挿入（パスワードは平文で保存、本番ではハッシュ化が必要）
+INSERT INTO users (username, password_hash, name, role) VALUES
+('tk', '0828', '管理者', 'admin'),
+('kie', '0521', 'ユーザーA', 'user'),
+('yoneko', '0823', 'ユーザーB', 'user'),
+('setsuko', '0412', 'ユーザーC', 'user');
