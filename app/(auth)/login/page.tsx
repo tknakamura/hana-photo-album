@@ -93,29 +93,29 @@ export default function LoginPage() {
     <div className="min-h-screen relative">
       <BackgroundVideo />
       <div className="relative z-10 min-h-screen flex items-center justify-center p-6">
-        <div className="w-full max-w-md mx-auto">
+        <div className="w-full max-w-lg mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             className="w-full"
           >
-            {/* ヘッダー */}
-            <div className="text-center mb-8 px-6">
+            {/* SmugMug風ヘッダー */}
+            <div className="text-center mb-12 px-6">
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-            className="inline-flex items-center justify-center w-20 h-20 bg-primary-500 rounded-full mb-4 shadow-lg"
+            className="inline-flex items-center justify-center w-24 h-24 bg-black rounded-full mb-6 shadow-2xl"
           >
-            <Camera className="w-10 h-10 text-white" />
+            <Camera className="w-12 h-12 text-white" />
           </motion.div>
           
           <motion.h1
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
-            className="text-3xl font-bold text-gray-800 mb-2"
+            className="smugmug-title mb-4"
           >
             華ちゃんのアルバム
           </motion.h1>
@@ -124,86 +124,86 @@ export default function LoginPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6 }}
-            className="text-gray-600"
+            className="smugmug-subtitle"
           >
             家族専用の成長記録
           </motion.p>
         </div>
 
-            {/* ログインフォーム */}
+            {/* SmugMug風ログインフォーム */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8 }}
-              className="card-cute p-8 mx-6"
+              className="smugmug-card p-10 mx-6"
             >
-          <form onSubmit={handleLogin} className="space-y-6">
-            <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
-                ユーザーID
-              </label>
-              <input
-                id="username"
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className="input-cute"
-                placeholder="ユーザーIDを入力"
-                required
-                disabled={isLoading}
-              />
-            </div>
-
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                パスワード
-              </label>
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="input-cute"
-                placeholder="••••••••"
-                required
-                disabled={isLoading}
-              />
-            </div>
-
-            {error && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="p-3 bg-red-50 border border-red-200 rounded-2xl text-red-600 text-sm"
-              >
-                {error}
-              </motion.div>
-            )}
-
-            <motion.button
-              type="submit"
-              disabled={isLoading}
-              className="btn-primary w-full touch-target"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              {isLoading ? (
-                <div className="flex items-center justify-center space-x-2">
-                  <div className="loading-dots">
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                  </div>
-                  <span>ログイン中...</span>
+              <form onSubmit={handleLogin} className="space-y-8">
+                <div>
+                  <label htmlFor="username" className="block text-sm font-semibold text-gray-900 mb-3 uppercase tracking-wide">
+                    ユーザーID
+                  </label>
+                  <input
+                    id="username"
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="input-smugmug"
+                    placeholder="ユーザーIDを入力"
+                    required
+                    disabled={isLoading}
+                  />
                 </div>
-              ) : (
-                <div className="flex items-center justify-center space-x-2">
-                  <Heart className="w-5 h-5" />
-                  <span>ログイン</span>
+
+                <div>
+                  <label htmlFor="password" className="block text-sm font-semibold text-gray-900 mb-3 uppercase tracking-wide">
+                    パスワード
+                  </label>
+                  <input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="input-smugmug"
+                    placeholder="••••••••"
+                    required
+                    disabled={isLoading}
+                  />
                 </div>
-              )}
-            </motion.button>
-          </form>
+
+                {error && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm font-medium"
+                  >
+                    {error}
+                  </motion.div>
+                )}
+
+                <motion.button
+                  type="submit"
+                  disabled={isLoading}
+                  className="smugmug-button w-full"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  {isLoading ? (
+                    <div className="flex items-center justify-center space-x-3">
+                      <div className="loading-dots">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                      </div>
+                      <span>ログイン中...</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center space-x-3">
+                      <Heart className="w-5 h-5" />
+                      <span>ログイン</span>
+                    </div>
+                  )}
+                </motion.button>
+              </form>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-500">

@@ -54,7 +54,7 @@ export default function PhotoGrid({ photos, onPhotoClick, className }: PhotoGrid
   }
 
   return (
-    <div className={cn('photo-grid', className)}>
+    <div className={cn('smugmug-photo-grid', className)}>
       <AnimatePresence>
         {photos.map((photo, index) => (
           <motion.div
@@ -68,13 +68,13 @@ export default function PhotoGrid({ photos, onPhotoClick, className }: PhotoGrid
               type: "spring",
               stiffness: 200
             }}
-            className="photo-item group cursor-pointer"
+            className="smugmug-photo-item group cursor-pointer"
             onClick={() => onPhotoClick(photo)}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
           >
             {/* 画像/動画コンテナ */}
-            <div className="relative w-full h-full overflow-hidden rounded-2xl">
+            <div className="relative w-full h-full overflow-hidden">
               {isVideo(photo.mime_type) ? (
                 <div className="w-full h-full bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center">
                   <div className="text-center">
