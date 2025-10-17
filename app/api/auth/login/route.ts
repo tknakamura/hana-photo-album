@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     }
 
     // パスワードハッシュを除外してユーザー情報を返す
-    const { password_hash, ...userWithoutPassword } = user
+    const { password_hash: _, ...userWithoutPassword } = user
 
     return NextResponse.json({ 
       success: true, 

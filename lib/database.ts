@@ -49,7 +49,7 @@ export async function addPhoto(photoData: {
   taken_at: Date
   uploaded_by?: number
   caption?: string
-  metadata?: any
+  metadata?: Record<string, unknown>
 }) {
   const pool = getPool()
   const result = await pool.query(
