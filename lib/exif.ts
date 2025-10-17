@@ -33,7 +33,12 @@ export async function extractPhotoMetadata(input: File | Buffer): Promise<PhotoM
       arrayBuffer = await input.arrayBuffer()
       lastModified = input.lastModified
     } else {
-      arrayBuffer = input.buffer.slice(input.byteOffset, input.byteOffset + input.byteLength)
+      // BufferからArrayBufferに変換
+      arrayBuffer = new ArrayBuffer(input.length)
+      const view = new Uint8Array(arrayBuffer)
+      for (let i = 0; i < input.length; i++) {
+        view[i] = input[i]
+      }
       lastModified = Date.now()
     }
     
