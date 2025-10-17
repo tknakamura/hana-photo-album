@@ -36,11 +36,27 @@ export default function GalleryPage() {
 
   // 認証チェック
   useEffect(() => {
-    if (!currentUser) {
-      router.push('/login')
-      return
+    const checkAuth = () => {
+      const user = localStorage.getItem('user')
+      if (!user) {
+        console.log('No user found, redirecting to login')
+        router.push('/login')
+        return
+      }
+      
+      try {
+        const parsedUser = JSON.parse(user)
+        setCurrentUser(parsedUser)
+        console.log('User authenticated:', parsedUser.username)
+      } catch (error) {
+        console.error('Invalid user data:', error)
+        localStorage.removeItem('user')
+        router.push('/login')
+      }
     }
-  }, [currentUser, router])
+    
+    checkAuth()
+  }, [router])
 
   const fetchPhotos = useCallback(async () => {
     try {

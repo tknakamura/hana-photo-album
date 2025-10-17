@@ -15,6 +15,18 @@ export default function LoginPage() {
   const router = useRouter()
   const supabase = createClient()
 
+  // 既にログインしている場合はギャラリーにリダイレクト
+  useEffect(() => {
+    const checkAuth = () => {
+      const user = localStorage.getItem('user')
+      if (user) {
+        console.log('User already logged in, redirecting to gallery')
+        router.push('/gallery')
+      }
+    }
+    checkAuth()
+  }, [router])
+
   const testDatabaseConnection = async () => {
     try {
       const { data, error } = await supabase
@@ -71,19 +83,8 @@ export default function LoginPage() {
       
       console.log('Login successful, redirecting to gallery...')
       
-      // 複数の方法でリダイレクトを試行
-      try {
-        router.push('/gallery')
-        // フォールバック: window.locationを使用
-        setTimeout(() => {
-          if (window.location.pathname === '/login') {
-            window.location.href = '/gallery'
-          }
-        }, 1000)
-      } catch (redirectError) {
-        console.error('Router redirect failed:', redirectError)
-        window.location.href = '/gallery'
-      }
+      // 確実なリダイレクト
+      window.location.href = '/gallery'
     } catch (error) {
       console.error('Login error:', error)
       setError('予期しないエラーが発生しました。')

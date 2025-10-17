@@ -22,16 +22,26 @@ export default function ProfilePage() {
   const supabase = createClient()
 
   useEffect(() => {
-    const currentUser = getCurrentUser()
-    if (!currentUser) {
-      router.push('/login')
-      return
+    const checkAuth = () => {
+      const user = localStorage.getItem('user')
+      if (!user) {
+        router.push('/login')
+        return
+      }
+      
+      try {
+        const parsedUser = JSON.parse(user)
+        setUser(parsedUser)
+        setName(parsedUser.name)
+        setBio(parsedUser.bio || '')
+        setProfileImagePreview(parsedUser.profile_image_url || '')
+      } catch (error) {
+        localStorage.removeItem('user')
+        router.push('/login')
+      }
     }
     
-    setUser(currentUser)
-    setName(currentUser.name)
-    setBio(currentUser.bio || '')
-    setProfileImagePreview(currentUser.profile_image_url || '')
+    checkAuth()
   }, [router])
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {

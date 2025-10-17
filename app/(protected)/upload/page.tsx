@@ -20,11 +20,24 @@ export default function UploadPage() {
 
   // 認証チェック
   useEffect(() => {
-    if (!currentUser) {
-      router.push('/login')
-      return
+    const checkAuth = () => {
+      const user = localStorage.getItem('user')
+      if (!user) {
+        router.push('/login')
+        return
+      }
+      
+      try {
+        const parsedUser = JSON.parse(user)
+        setCurrentUser(parsedUser)
+      } catch (error) {
+        localStorage.removeItem('user')
+        router.push('/login')
+      }
     }
-  }, [currentUser, router])
+    
+    checkAuth()
+  }, [router])
 
   const handleUpload = async () => {
     if (uploadFiles.length === 0) return
