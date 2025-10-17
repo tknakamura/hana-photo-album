@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
       original_filename: file.name,
       mime_type: file.type,
       taken_at: takenAt,
-      uploaded_by: uploadedBy ? parseInt(uploadedBy) : null,
+      uploaded_by: uploadedBy ? parseInt(uploadedBy) : undefined,
       metadata: metadata
     })
 

@@ -58,12 +58,12 @@ export async function addPhoto(photoData: {
      RETURNING *`,
     [
       photoData.file_path,
-      photoData.thumbnail_path,
+      photoData.thumbnail_path || null,
       photoData.original_filename,
       photoData.mime_type,
       photoData.taken_at,
-      photoData.uploaded_by,
-      photoData.caption,
+      photoData.uploaded_by || null,
+      photoData.caption || null,
       JSON.stringify(photoData.metadata || {})
     ]
   )
