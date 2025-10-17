@@ -5,6 +5,8 @@ export interface User {
   username: string
   name: string
   role: 'admin' | 'user'
+  profile_image_url?: string
+  bio?: string
 }
 
 export function getCurrentUser(): User | null {

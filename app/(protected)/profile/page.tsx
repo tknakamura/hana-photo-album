@@ -4,21 +4,12 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Save, Camera, User } from 'lucide-react'
-import { getCurrentUser, logout as authLogout } from '@/lib/auth'
+import { ArrowLeft, Save, Camera, User as UserIcon } from 'lucide-react'
+import { getCurrentUser, logout as authLogout, User } from '@/lib/auth'
 import Image from 'next/image'
 
-interface UserProfile {
-  id: string
-  username: string
-  name: string
-  role: 'admin' | 'user'
-  profile_image_url?: string
-  bio?: string
-}
-
 export default function ProfilePage() {
-  const [user, setUser] = useState<UserProfile | null>(null)
+  const [user, setUser] = useState<User | null>(null)
   const [name, setName] = useState('')
   const [bio, setBio] = useState('')
   const [profileImage, setProfileImage] = useState<File | null>(null)
@@ -173,7 +164,7 @@ export default function ProfilePage() {
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
-                    <User className="w-16 h-16 text-gray-400" />
+                    <UserIcon className="w-16 h-16 text-gray-400" />
                   </div>
                 )}
               </div>
