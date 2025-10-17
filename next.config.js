@@ -5,13 +5,13 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '*.supabase.co',
+        hostname: '*.onrender.com',
         port: '',
-        pathname: '/storage/v1/object/public/**',
+        pathname: '/**',
       },
     ],
   },
-  serverExternalPackages: ['sharp'],
+  serverExternalPackages: ['sharp', 'pg'],
 }
 
 module.exports = nextConfig
