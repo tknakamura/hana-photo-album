@@ -8,8 +8,8 @@ const MAX_ATTEMPTS = 5
 const RATE_LIMIT_WINDOW = 15 * 60 * 1000 // 15分
 
 // CSRFトークン検証（簡易版）
-function validateCSRFToken(request: NextRequest): boolean {
-  const headersList = headers()
+async function validateCSRFToken(request: NextRequest): Promise<boolean> {
+  const headersList = await headers()
   const xRequestedWith = headersList.get('x-requested-with')
   const origin = headersList.get('origin')
   const referer = headersList.get('referer')
@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
   
   try {
     // CSRFトークン検証
-    if (!validateCSRFToken(request)) {
+    if (!(await validateCSRFToken(request))) {
       return NextResponse.json(
         { error: 'セキュリティトークンが無効です' }, 
         { status: 403 }
