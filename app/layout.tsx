@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     { media: "(prefers-color-scheme: light)", color: "#fce7f3" },
     { media: "(prefers-color-scheme: dark)", color: "#7a1d8a" },
   ],
-  manifest: "/manifest.json",
+  // manifest: "/manifest.json", // 一時的に無効化
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",

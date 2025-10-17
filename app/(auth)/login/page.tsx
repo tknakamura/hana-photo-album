@@ -69,8 +69,21 @@ export default function LoginPage() {
       // セッションにユーザー情報を保存
       localStorage.setItem('user', JSON.stringify(userData))
       
-      router.push('/gallery')
-      router.refresh()
+      console.log('Login successful, redirecting to gallery...')
+      
+      // 複数の方法でリダイレクトを試行
+      try {
+        router.push('/gallery')
+        // フォールバック: window.locationを使用
+        setTimeout(() => {
+          if (window.location.pathname === '/login') {
+            window.location.href = '/gallery'
+          }
+        }, 1000)
+      } catch (redirectError) {
+        console.error('Router redirect failed:', redirectError)
+        window.location.href = '/gallery'
+      }
     } catch (error) {
       console.error('Login error:', error)
       setError('予期しないエラーが発生しました。')
