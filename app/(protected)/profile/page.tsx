@@ -101,40 +101,41 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-orange-100">
-      {/* ヘッダー */}
-      <div className="mobile-header">
-        <div className="mobile-container">
-          <div className="flex items-center justify-between py-4">
-            <motion.button
-              onClick={() => router.back()}
-              className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <ArrowLeft className="w-5 h-5" />
-              <span>戻る</span>
-            </motion.button>
+    <div className="min-h-screen bg-white">
+      {/* SmugMug風ヘッダー */}
+      <motion.header
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ type: "spring", stiffness: 100, damping: 20 }}
+        className="smugmug-nav p-4 flex items-center justify-between"
+      >
+        <motion.button
+          onClick={() => router.back()}
+          className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <ArrowLeft className="w-5 h-5" />
+          <span>戻る</span>
+        </motion.button>
 
-            <div className="flex items-center space-x-2">
-              <UserIcon className="w-6 h-6 text-primary-500" />
-              <h1 className="text-xl font-bold text-gray-800">プロフィール</h1>
-            </div>
-
-            <motion.button
-              onClick={handleLogout}
-              className="text-sm text-gray-600 hover:text-gray-800 transition-colors"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              ログアウト
-            </motion.button>
-          </div>
+        <div className="flex items-center space-x-2">
+          <UserIcon className="w-6 h-6 text-gray-700" />
+          <h1 className="text-xl font-bold text-gray-800">プロフィール</h1>
         </div>
-      </div>
+
+        <motion.button
+          onClick={handleLogout}
+          className="text-sm text-gray-600 hover:text-gray-800 transition-colors"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          ログアウト
+        </motion.button>
+      </motion.header>
 
       {/* メインコンテンツ */}
-      <div className="mobile-container py-6">
+      <div className="smugmug-container py-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -142,7 +143,7 @@ export default function ProfilePage() {
           className="space-y-6"
         >
           {/* プロフィール画像 */}
-          <div className="card-cute p-6">
+          <div className="smugmug-card p-6">
             <div className="text-center space-y-4">
               <div className="relative inline-block">
                 {profileImagePreview ? (
@@ -161,7 +162,7 @@ export default function ProfilePage() {
                   </div>
                 )}
                 
-                <label className="absolute bottom-0 right-0 bg-primary-500 text-white rounded-full p-2 cursor-pointer hover:bg-primary-600 transition-colors">
+                <label className="absolute bottom-0 right-0 bg-black text-white rounded-full p-2 cursor-pointer hover:bg-gray-800 transition-colors">
                   <Camera className="w-4 h-4" />
                   <input
                     type="file"
@@ -179,10 +180,10 @@ export default function ProfilePage() {
           </div>
 
           {/* ユーザー情報フォーム */}
-          <div className="card-cute p-6">
+          <div className="smugmug-card p-6">
             <div className="space-y-4">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="name" className="block text-sm font-semibold text-gray-900 mb-3 uppercase tracking-wide">
                   名前
                 </label>
                 <input
@@ -190,20 +191,20 @@ export default function ProfilePage() {
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="input-cute"
+                  className="input-smugmug"
                   placeholder="名前を入力"
                 />
               </div>
 
               <div>
-                <label htmlFor="bio" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="bio" className="block text-sm font-semibold text-gray-900 mb-3 uppercase tracking-wide">
                   自己紹介
                 </label>
                 <textarea
                   id="bio"
                   value={bio}
                   onChange={(e) => setBio(e.target.value)}
-                  className="input-cute min-h-[100px] resize-none"
+                  className="input-smugmug min-h-[100px] resize-none"
                   placeholder="自己紹介を入力"
                 />
               </div>
@@ -212,7 +213,7 @@ export default function ProfilePage() {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="p-3 bg-red-50 border border-red-200 rounded-2xl text-red-600 text-sm"
+                  className="p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm font-medium"
                 >
                   {error}
                 </motion.div>
@@ -222,7 +223,7 @@ export default function ProfilePage() {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="p-3 bg-green-50 border border-green-200 rounded-2xl text-green-600 text-sm"
+                  className="p-4 bg-green-50 border-l-4 border-green-500 text-green-700 text-sm font-medium"
                 >
                   {success}
                 </motion.div>
@@ -231,7 +232,7 @@ export default function ProfilePage() {
               <motion.button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="btn-primary w-full touch-target"
+                className="smugmug-button w-full"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
@@ -255,7 +256,7 @@ export default function ProfilePage() {
           </div>
 
           {/* ユーザー情報表示 */}
-          <div className="card-cute p-6">
+          <div className="smugmug-card p-6">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">アカウント情報</h3>
             <div className="space-y-3 text-sm">
               <div className="flex justify-between">

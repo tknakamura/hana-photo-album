@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { ArrowLeft, Upload, Camera, Heart } from 'lucide-react'
 import UploadArea, { UploadFile } from '@/components/upload/UploadArea'
-import Button from '@/components/ui/Button'
 
 export default function UploadPage() {
   const [uploadFiles, setUploadFiles] = useState<UploadFile[]>([])
@@ -78,33 +77,34 @@ export default function UploadPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-orange-100">
-      {/* ヘッダー */}
-      <div className="mobile-header">
-        <div className="mobile-container">
-          <div className="flex items-center justify-between py-4">
-            <motion.button
-              onClick={() => router.back()}
-              className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <ArrowLeft className="w-5 h-5" />
-              <span>戻る</span>
-            </motion.button>
+    <div className="min-h-screen bg-white">
+      {/* SmugMug風ヘッダー */}
+      <motion.header
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ type: "spring", stiffness: 100, damping: 20 }}
+        className="smugmug-nav p-4 flex items-center justify-between"
+      >
+        <motion.button
+          onClick={() => router.back()}
+          className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <ArrowLeft className="w-5 h-5" />
+          <span>戻る</span>
+        </motion.button>
 
-            <div className="flex items-center space-x-2">
-              <Camera className="w-6 h-6 text-primary-500" />
-              <h1 className="text-xl font-bold text-gray-800">写真をアップロード</h1>
-            </div>
-
-            <div className="w-16" /> {/* スペーサー */}
-          </div>
+        <div className="flex items-center space-x-2">
+          <Camera className="w-6 h-6 text-gray-700" />
+          <h1 className="text-xl font-bold text-gray-800">写真をアップロード</h1>
         </div>
-      </div>
+
+        <div className="w-16" /> {/* スペーサー */}
+      </motion.header>
 
       {/* メインコンテンツ */}
-      <div className="mobile-container py-6">
+      <div className="smugmug-container py-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -112,7 +112,7 @@ export default function UploadPage() {
           className="space-y-6"
         >
           {/* アップロードエリア */}
-          <div className="card-cute p-6">
+          <div className="smugmug-card p-6">
             <UploadArea
               onUpload={setUploadFiles}
               maxFiles={10}
@@ -126,7 +126,7 @@ export default function UploadPage() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.3 }}
-              className="card-cute p-6"
+              className="smugmug-card p-6"
             >
               <div className="text-center space-y-4">
                 <p className="text-gray-600">
@@ -137,7 +137,7 @@ export default function UploadPage() {
                   <div className="space-y-2">
                     <div className="w-full bg-gray-200 rounded-full h-2">
                       <div
-                        className="bg-primary-500 h-2 rounded-full transition-all duration-300"
+                        className="bg-black h-2 rounded-full transition-all duration-300"
                         style={{ width: `${uploadProgress}%` }}
                       />
                     </div>
@@ -147,10 +147,12 @@ export default function UploadPage() {
                   </div>
                 )}
 
-                <Button
+                <motion.button
                   onClick={handleUpload}
                   disabled={isUploading}
-                  className="btn-primary w-full touch-target"
+                  className="smugmug-button w-full"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
                   {isUploading ? (
                     <div className="flex items-center justify-center space-x-2">
@@ -167,7 +169,7 @@ export default function UploadPage() {
                       <span>アップロード開始</span>
                     </div>
                   )}
-                </Button>
+                </motion.button>
               </div>
             </motion.div>
           )}
@@ -177,10 +179,10 @@ export default function UploadPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
-            className="card-cute p-6"
+            className="smugmug-card p-6"
           >
             <div className="flex items-start space-x-3">
-              <Heart className="w-5 h-5 text-primary-500 mt-0.5 flex-shrink-0" />
+              <Heart className="w-5 h-5 text-gray-700 mt-0.5 flex-shrink-0" />
               <div className="text-sm text-gray-600">
                 <p className="font-medium mb-1">アップロードのヒント</p>
                 <ul className="space-y-1 text-xs">

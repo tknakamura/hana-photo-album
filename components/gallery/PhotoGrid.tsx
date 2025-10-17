@@ -40,8 +40,8 @@ export default function PhotoGrid({ photos, onPhotoClick, className }: PhotoGrid
         animate={{ opacity: 1 }}
         className="text-center py-12"
       >
-        <div className="w-24 h-24 bg-gradient-to-br from-pink-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <Camera className="w-12 h-12 text-pink-400" />
+        <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <Camera className="w-12 h-12 text-gray-400" />
         </div>
         <h3 className="text-lg font-semibold text-gray-800 mb-2">
           まだ写真がありません
@@ -75,21 +75,21 @@ export default function PhotoGrid({ photos, onPhotoClick, className }: PhotoGrid
           >
             {/* 画像/動画コンテナ */}
             <div className="relative w-full h-full overflow-hidden">
-              {isVideo(photo.mime_type) ? (
-                <div className="w-full h-full bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="w-12 h-12 bg-white/80 rounded-full flex items-center justify-center mb-2 mx-auto">
-                      <Play className="w-6 h-6 text-purple-500 ml-1" />
+                  {isVideo(photo.mime_type) ? (
+                    <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+                      <div className="text-center">
+                        <div className="w-12 h-12 bg-white/80 rounded-full flex items-center justify-center mb-2 mx-auto">
+                          <Play className="w-6 h-6 text-gray-500 ml-1" />
+                        </div>
+                        <p className="text-xs text-gray-600">動画</p>
+                      </div>
                     </div>
-                    <p className="text-xs text-gray-600">動画</p>
-                  </div>
-                </div>
-              ) : (
-                <>
-                  {/* ローディング状態 */}
-                  {!loadedImages.has(photo.id) && (
-                    <div className="absolute inset-0 bg-gradient-to-br from-pink-100 to-purple-100 animate-pulse" />
-                  )}
+                  ) : (
+                    <>
+                      {/* ローディング状態 */}
+                      {!loadedImages.has(photo.id) && (
+                        <div className="absolute inset-0 bg-gray-100 animate-pulse" />
+                      )}
                   
                   {/* 実際の画像 */}
                   <Image

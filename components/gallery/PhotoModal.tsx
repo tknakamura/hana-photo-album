@@ -82,9 +82,9 @@ export default function PhotoModal({ photo, photos, isOpen, onClose, onNavigate 
           onClick={(e) => e.stopPropagation()}
         >
           {/* ヘッダー */}
-          <div className="flex items-center justify-between p-4 border-b border-pink-100">
+          <div className="flex items-center justify-between p-4 border-b border-gray-200">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center">
+              <div className="w-8 h-8 bg-black rounded-full flex items-center justify-center">
                 <Camera className="w-4 h-4 text-white" />
               </div>
               <div>
@@ -114,7 +114,7 @@ export default function PhotoModal({ photo, photos, isOpen, onClose, onNavigate 
               {isVideo ? (
                 <div className="w-full h-full flex items-center justify-center">
                   <div className="text-center">
-                    <div className="w-24 h-24 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full flex items-center justify-center mb-4 mx-auto">
+                    <div className="w-24 h-24 bg-black rounded-full flex items-center justify-center mb-4 mx-auto">
                       <Heart className="w-12 h-12 text-white" />
                     </div>
                     <p className="text-gray-600">動画の再生機能は準備中です</p>
@@ -124,7 +124,7 @@ export default function PhotoModal({ photo, photos, isOpen, onClose, onNavigate 
                 <>
                   {/* ローディング状態 */}
                   {!imageLoaded && (
-                    <div className="absolute inset-0 bg-gradient-to-br from-pink-100 to-purple-100 animate-pulse flex items-center justify-center">
+                    <div className="absolute inset-0 bg-gray-100 animate-pulse flex items-center justify-center">
                       <div className="loading-dots">
                         <div></div>
                         <div></div>
@@ -174,7 +174,7 @@ export default function PhotoModal({ photo, photos, isOpen, onClose, onNavigate 
           </div>
 
           {/* フッター */}
-          <div className="p-4 border-t border-pink-100 bg-white/80 backdrop-blur-sm">
+          <div className="p-4 border-t border-gray-200 bg-white/80 backdrop-blur-sm">
             <div className="space-y-4">
               {/* 撮影情報 */}
               <div className="flex items-center space-x-4 text-sm text-gray-600">
@@ -198,7 +198,7 @@ export default function PhotoModal({ photo, photos, isOpen, onClose, onNavigate 
 
               {/* キャプション */}
               {photo.caption && (
-                <div className="p-3 bg-pink-50 rounded-2xl">
+                <div className="p-3 bg-gray-50 rounded-lg">
                   <p className="text-gray-800">{photo.caption}</p>
                 </div>
               )}
@@ -206,29 +206,29 @@ export default function PhotoModal({ photo, photos, isOpen, onClose, onNavigate 
               {/* アクションボタン */}
               <div className="flex items-center justify-center space-x-4">
                 <motion.button
-                  className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-pink-400 to-purple-500 text-white rounded-2xl hover:shadow-lg transition-all duration-300"
+                  className="smugmug-button"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <Heart className="w-4 h-4" />
+                  <Heart className="w-4 h-4 mr-2" />
                   <span>いいね</span>
                 </motion.button>
                 
                 <motion.button
-                  className="flex items-center space-x-2 px-4 py-2 bg-white border border-pink-200 text-gray-700 rounded-2xl hover:bg-pink-50 transition-all duration-300"
+                  className="smugmug-button-secondary"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <Share2 className="w-4 h-4" />
+                  <Share2 className="w-4 h-4 mr-2" />
                   <span>共有</span>
                 </motion.button>
                 
                 <motion.button
-                  className="flex items-center space-x-2 px-4 py-2 bg-white border border-pink-200 text-gray-700 rounded-2xl hover:bg-pink-50 transition-all duration-300"
+                  className="smugmug-button-secondary"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <Download className="w-4 h-4" />
+                  <Download className="w-4 h-4 mr-2" />
                   <span>保存</span>
                 </motion.button>
               </div>
