@@ -56,17 +56,18 @@ export default function LoginPage() {
   }
 
   return (
-    <>
+    <div className="min-h-screen relative login-page">
       <BackgroundVideo />
-      <div className="min-h-screen flex items-center justify-center p-4 bg-transparent relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="w-full max-w-md mx-auto"
-        >
-        {/* ヘッダー */}
-        <div className="text-center mb-8">
+      <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
+        <div className="w-full max-w-md">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="w-full"
+          >
+            {/* ヘッダー */}
+            <div className="text-center mb-8 px-4">
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
@@ -95,13 +96,13 @@ export default function LoginPage() {
           </motion.p>
         </div>
 
-        {/* ログインフォーム */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8 }}
-          className="card-cute p-8 mx-4 sm:mx-0"
-        >
+            {/* ログインフォーム */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8 }}
+              className="card-cute p-8 mx-4"
+            >
           <form onSubmit={handleLogin} className="space-y-6">
             <div>
               <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
@@ -180,21 +181,22 @@ export default function LoginPage() {
           </div>
         </motion.div>
 
-        {/* フッター */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.2 }}
-          className="text-center mt-8 px-4"
-        >
-          <div className="flex items-center justify-center space-x-2 text-gray-400">
-            <Sparkles className="w-4 h-4 animate-pulse" />
-            <span className="text-sm">Made with love for 華ちゃん</span>
-            <Sparkles className="w-4 h-4 animate-pulse" />
-          </div>
-        </motion.div>
-      </motion.div>
+            {/* フッター */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.2 }}
+              className="text-center mt-8 px-4"
+            >
+              <div className="flex items-center justify-center space-x-2 text-gray-400">
+                <Sparkles className="w-4 h-4 animate-pulse" />
+                <span className="text-sm">Made with love for 華ちゃん</span>
+                <Sparkles className="w-4 h-4 animate-pulse" />
+              </div>
+            </motion.div>
+          </motion.div>
+        </div>
       </div>
-    </>
+    </div>
   )
 }

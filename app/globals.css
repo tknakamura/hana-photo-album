@@ -23,6 +23,11 @@ body.login-page {
   background: transparent;
 }
 
+/* ログインページの背景を透明に */
+.login-page body {
+  background: transparent !important;
+}
+
 /* モバイルでのタッチ操作を最適化 */
 * {
   -webkit-tap-highlight-color: transparent;
