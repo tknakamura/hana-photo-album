@@ -117,7 +117,6 @@ export default function UploadPage() {
             <UploadArea
               onUpload={setUploadFiles}
               maxFiles={10}
-              acceptedTypes={['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'video/mp4', 'video/webm']}
             />
           </div>
 
