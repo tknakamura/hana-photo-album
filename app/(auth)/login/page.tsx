@@ -255,7 +255,7 @@ export default function LoginPage() {
                     type="text"
                     value={formState.username}
                     onChange={handleUsernameChange}
-                    className={`input-smugmug text-white ${formState.validationErrors.username ? 'border-white focus:border-white' : 'focus:border-white'}`}
+                    className={`input-smugmug w-full text-white ${formState.validationErrors.username ? 'border-white focus:border-white' : 'focus:border-white'}`}
                     placeholder="ユーザーIDを入力"
                     required
                     disabled={formState.isLoading}
@@ -287,7 +287,7 @@ export default function LoginPage() {
                     type="password"
                     value={formState.password}
                     onChange={handlePasswordChange}
-                    className={`input-smugmug text-white ${formState.validationErrors.password ? 'border-white focus:border-white' : 'focus:border-white'}`}
+                    className={`input-smugmug w-full text-white ${formState.validationErrors.password ? 'border-white focus:border-white' : 'focus:border-white'}`}
                     placeholder="••••••••"
                     required
                     disabled={formState.isLoading}
