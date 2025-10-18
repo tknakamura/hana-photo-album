@@ -147,13 +147,13 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAFAF8]">
+    <div className="main-content">
       {/* ヘッダー */}
       <motion.header
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ type: "spring", stiffness: 100, damping: 20 }}
-        className="bg-white border-b border-gray-200 px-4 py-4"
+        className="page-header"
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
@@ -161,8 +161,8 @@ export default function HomePage() {
               <span className="text-white text-lg">👨‍👩‍👧‍👦</span>
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-800">家族アルバム</h1>
-              <p className="text-sm text-gray-500">思い出を共有しよう</p>
+              <h1 className="page-title">家族アルバム</h1>
+              <p className="page-subtitle">思い出を共有しよう</p>
             </div>
           </div>
           <motion.button
@@ -188,7 +188,7 @@ export default function HomePage() {
           </div>
           
           {photos.length > 0 ? (
-            <div className="bg-white rounded-2xl p-4 shadow-sm">
+            <div className="card">
               <div className="text-sm text-gray-600 mb-3">
                 {formatDate(photos[0]?.taken_at || photos[0]?.created_at)} の思い出
               </div>
