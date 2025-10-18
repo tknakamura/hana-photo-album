@@ -200,7 +200,7 @@ export default function PhotoModal({ photo, photos, isOpen, onClose, onNavigate 
                   <span>{formatDate(new Date(photo.taken_at))}</span>
                 </div>
                 {(() => {
-                  const camera = photo.metadata?.camera
+                  const camera = photo.exif_json?.camera
                   if (camera && typeof camera === 'object' && camera !== null && 'make' in camera && 'model' in camera) {
                     return (
                       <div className="flex items-center space-x-1">

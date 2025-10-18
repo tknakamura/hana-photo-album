@@ -8,7 +8,7 @@ import { Upload, Camera, Grid, List, ArrowLeft } from 'lucide-react'
 import PhotoGrid from '@/components/gallery/PhotoGrid'
 import PhotoModal from '@/components/gallery/PhotoModal'
 import BottomTabBar from '@/components/ui/BottomTabBar'
-import { getCurrentUser, logout as authLogout, User } from '@/lib/auth'
+import { getCurrentUser, User } from '@/lib/auth'
 
 interface Photo {
   id: string
