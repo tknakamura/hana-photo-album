@@ -133,6 +133,7 @@ export default function ProfilePage() {
           >
             ログアウト
           </motion.button>
+        </div>
       </motion.header>
 
       {/* メインコンテンツ */}
