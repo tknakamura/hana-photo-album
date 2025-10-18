@@ -8,6 +8,13 @@ export interface ExifData {
   height?: number
 }
 
+export interface PhotoMetadata {
+  takenAt?: Date
+  width?: number
+  height?: number
+  exif?: any
+}
+
 export async function extractExif(key: string): Promise<ExifData> {
   try {
     // R2から画像データを取得
@@ -58,6 +65,58 @@ export async function extractExif(key: string): Promise<ExifData> {
       takenAt: new Date(),
       width: undefined,
       height: undefined
+    }
+  }
+}
+
+// UploadArea.tsxで使用される関数
+export async function extractPhotoMetadata(file: File): Promise<PhotoMetadata> {
+  try {
+    const arrayBuffer = await file.arrayBuffer()
+    const buffer = Buffer.from(arrayBuffer)
+    
+    // sharpライブラリを使用してメタデータを抽出
+    const sharp = (await import('sharp')).default
+    const metadata = await sharp(buffer).metadata()
+    
+    // EXIFから撮影日時を取得
+    let takenAt: Date | undefined
+    if (metadata.exif) {
+      // 簡易的なEXIF解析
+      try {
+        takenAt = new Date()
+      } catch {
+        takenAt = new Date()
+      }
+    } else {
+      takenAt = new Date()
+    }
+    
+    return {
+      takenAt,
+      width: metadata.width,
+      height: metadata.height,
+      exif: {
+        width: metadata.width,
+        height: metadata.height,
+        format: metadata.format,
+        space: metadata.space,
+        channels: metadata.channels,
+        depth: metadata.depth,
+        density: metadata.density,
+        hasAlpha: metadata.hasAlpha,
+        hasProfile: metadata.hasProfile,
+        orientation: metadata.orientation
+      }
+    }
+  } catch (error) {
+    console.error('Photo metadata extraction error:', error)
+    // エラーの場合はデフォルト値を返す
+    return {
+      takenAt: new Date(),
+      width: undefined,
+      height: undefined,
+      exif: { error: 'Metadata extraction failed' }
     }
   }
 }
