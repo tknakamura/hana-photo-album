@@ -127,12 +127,12 @@ export default function ProfilePage() {
           </div>
           <motion.button
             onClick={handleLogout}
-          className="text-sm text-gray-600 hover:text-gray-800 transition-colors"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          ログアウト
-        </motion.button>
+            className="text-sm text-gray-600 hover:text-gray-800 transition-colors"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            ログアウト
+          </motion.button>
       </motion.header>
 
       {/* メインコンテンツ */}

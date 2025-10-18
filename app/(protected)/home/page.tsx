@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, Calendar, Sun, PalmTree, Trophy } from 'lucide-react'
+import { Search, Calendar, Sun, Palmtree, Trophy } from 'lucide-react'
 import { getCurrentUser, logout as authLogout, User } from '@/lib/auth'
 import BottomTabBar from '@/components/ui/BottomTabBar'
 import PhotoGrid from '@/components/gallery/PhotoGrid'
@@ -116,7 +116,7 @@ export default function HomePage() {
 
   const getAlbumIcon = (title: string) => {
     if (title.includes('夏')) return Sun
-    if (title.includes('沖縄') || title.includes('旅行')) return PalmTree
+    if (title.includes('沖縄') || title.includes('旅行')) return Palmtree
     if (title.includes('運動会')) return Trophy
     return Calendar
   }

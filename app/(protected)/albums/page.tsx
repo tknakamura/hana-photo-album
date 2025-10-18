@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowLeft, Plus, Sun, PalmTree, Trophy, Heart, Camera, Star } from 'lucide-react'
+import { ArrowLeft, Plus, Sun, Palmtree, Trophy, Heart, Camera, Star } from 'lucide-react'
 import { getCurrentUser, User } from '@/lib/auth'
 import BottomTabBar from '@/components/ui/BottomTabBar'
 
@@ -115,7 +115,7 @@ export default function AlbumsPage() {
 
   const getAlbumIcon = (title: string) => {
     if (title.includes('夏')) return Sun
-    if (title.includes('沖縄') || title.includes('旅行')) return PalmTree
+    if (title.includes('沖縄') || title.includes('旅行')) return Palmtree
     if (title.includes('運動会')) return Trophy
     if (title.includes('誕生日')) return Heart
     if (title.includes('春') || title.includes('桜')) return Star
