@@ -35,7 +35,7 @@ export default function PhotoGrid({ photos, onPhotoClick, className }: PhotoGrid
     setLoadedImages(prev => new Set(prev).add(photoId))
   }, [])
 
-  const isVideo = (mimeType: string) => mimeType.startsWith('video/')
+  const isVideo = useCallback((mimeType: string) => mimeType.startsWith('video/'), [])
 
   // 署名付きURLを取得
   const getImageUrl = useCallback(async (photoId: string, variant: string = 'thumb') => {

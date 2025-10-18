@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 // import { createClient } from '@/lib/supabase/client' // 不要になったためコメントアウト
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Upload, Camera, LogOut, Grid, List, User as UserIcon, Home, ArrowLeft } from 'lucide-react'
+import { Upload, Camera, Grid, List, ArrowLeft } from 'lucide-react'
 import PhotoGrid from '@/components/gallery/PhotoGrid'
 import PhotoModal from '@/components/gallery/PhotoModal'
 import BottomTabBar from '@/components/ui/BottomTabBar'

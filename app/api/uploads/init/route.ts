@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { filename, size, mime, sha256 } = await req.json()
+    const { size, mime, sha256 } = await req.json()
 
     // バリデーション
     if (!['image/jpeg', 'image/png', 'image/webp', 'video/mp4'].includes(mime)) {

@@ -31,7 +31,7 @@ export default function UploadArea({
   onUpload, 
   maxFiles = 10, 
   maxSize = 50 * 1024 * 1024, // 50MB
-  acceptedTypes: _acceptedTypes = ['image/*', 'video/*'],
+  acceptedTypes = ['image/*', 'video/*'],
   className 
 }: UploadAreaProps) {
   const [uploadFiles, setUploadFiles] = useState<UploadFile[]>([])
@@ -87,7 +87,7 @@ export default function UploadArea({
     
     onUpload([...uploadFiles, ...newFiles])
     setIsProcessing(false)
-  }, [uploadFiles, onUpload])
+  }, [uploadFiles, onUpload, uploadFileToR2])
 
   // R2へのアップロード処理
   const uploadFileToR2 = async (uploadFile: UploadFile) => {

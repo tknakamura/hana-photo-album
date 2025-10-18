@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 
 export default function BackgroundVideo() {
   const videoRef = useRef<HTMLVideoElement>(null)
-  const [isVideoLoaded, setIsVideoLoaded] = useState(false)
+  const [, setIsVideoLoaded] = useState(false)
   const [hasError, setHasError] = useState(false)
 
   useEffect(() => {

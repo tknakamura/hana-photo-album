@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowLeft, Plus, Sun, Palmtree, Trophy, Heart, Camera, Star } from 'lucide-react'
-import { getCurrentUser, User } from '@/lib/auth'
+import { User } from '@/lib/auth'
 import BottomTabBar from '@/components/ui/BottomTabBar'
 
 interface Album {

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Save, Camera, User as UserIcon, LogOut, Settings } from 'lucide-react'
+import { ArrowLeft, Save, Camera, User as UserIcon } from 'lucide-react'
 import { logout as authLogout, User } from '@/lib/auth'
 import BottomTabBar from '@/components/ui/BottomTabBar'
 import Image from 'next/image'

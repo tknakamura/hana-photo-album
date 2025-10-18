@@ -2,7 +2,7 @@ import { GetObjectCommand } from '@aws-sdk/client-s3'
 import { s3 } from './r2'
 
 export interface ExifData {
-  json: any
+  json: Record<string, unknown>
   takenAt?: Date
   width?: number
   height?: number
@@ -12,7 +12,7 @@ export interface PhotoMetadata {
   takenAt?: Date
   width?: number
   height?: number
-  exif?: any
+  exif?: Record<string, unknown>
 }
 
 export async function extractExif(key: string): Promise<ExifData> {

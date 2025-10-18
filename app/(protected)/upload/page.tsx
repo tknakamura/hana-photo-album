@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Upload, Camera, Heart } from 'lucide-react'
+import { ArrowLeft, Upload, Heart } from 'lucide-react'
 import UploadArea, { UploadFile } from '@/components/upload/UploadArea'
 import BottomTabBar from '@/components/ui/BottomTabBar'
 

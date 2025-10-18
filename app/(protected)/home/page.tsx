@@ -2,9 +2,9 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Search, Calendar, Sun, Palmtree, Trophy } from 'lucide-react'
-import { getCurrentUser, logout as authLogout, User } from '@/lib/auth'
+import { motion } from 'framer-motion'
+import { Search, Calendar, Sun, Palmtree, Trophy, Images } from 'lucide-react'
+import { User } from '@/lib/auth'
 import BottomTabBar from '@/components/ui/BottomTabBar'
 import PhotoGrid from '@/components/gallery/PhotoGrid'
 

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { writeFile, mkdir } from 'fs/promises'
 import { join } from 'path'
 import { addPhoto } from '@/lib/database'
-import { extractExif } from '@/lib/exif'
+// import { extractExif } from '@/lib/exif' // 現在未使用
 
 export async function POST(request: NextRequest) {
   try {
