@@ -51,7 +51,7 @@ const nextConfig = {
         worker_threads: false,
       }
       
-      // pgライブラリをクライアントサイドで除外
+      // サーバーサイド専用ライブラリをクライアントサイドで除外
       config.externals = config.externals || []
       config.externals.push({
         'pg': 'commonjs pg',
@@ -63,6 +63,7 @@ const nextConfig = {
         'pg-connection-string': 'commonjs pg-connection-string',
         'pgpass': 'commonjs pgpass',
         'detect-libc': 'commonjs detect-libc',
+        'sharp': 'commonjs sharp',
       })
     }
     return config

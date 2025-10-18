@@ -69,46 +69,42 @@ export async function extractExif(key: string): Promise<ExifData> {
   }
 }
 
-// UploadArea.tsxで使用される関数
+// クライアントサイド用の簡易メタデータ抽出関数
 export async function extractPhotoMetadata(file: File): Promise<PhotoMetadata> {
   try {
-    const arrayBuffer = await file.arrayBuffer()
-    const buffer = Buffer.from(arrayBuffer)
+    // クライアントサイドでは基本的な情報のみを取得
+    const image = new Image()
+    const url = URL.createObjectURL(file)
     
-    // sharpライブラリを使用してメタデータを抽出
-    const sharp = (await import('sharp')).default
-    const metadata = await sharp(buffer).metadata()
-    
-    // EXIFから撮影日時を取得
-    let takenAt: Date | undefined
-    if (metadata.exif) {
-      // 簡易的なEXIF解析
-      try {
-        takenAt = new Date()
-      } catch {
-        takenAt = new Date()
+    return new Promise((resolve) => {
+      image.onload = () => {
+        URL.revokeObjectURL(url)
+        resolve({
+          takenAt: new Date(),
+          width: image.naturalWidth,
+          height: image.naturalHeight,
+          exif: {
+            width: image.naturalWidth,
+            height: image.naturalHeight,
+            format: file.type,
+            size: file.size,
+            lastModified: file.lastModified
+          }
+        })
       }
-    } else {
-      takenAt = new Date()
-    }
-    
-    return {
-      takenAt,
-      width: metadata.width,
-      height: metadata.height,
-      exif: {
-        width: metadata.width,
-        height: metadata.height,
-        format: metadata.format,
-        space: metadata.space,
-        channels: metadata.channels,
-        depth: metadata.depth,
-        density: metadata.density,
-        hasAlpha: metadata.hasAlpha,
-        hasProfile: metadata.hasProfile,
-        orientation: metadata.orientation
+      
+      image.onerror = () => {
+        URL.revokeObjectURL(url)
+        resolve({
+          takenAt: new Date(),
+          width: undefined,
+          height: undefined,
+          exif: { error: 'Failed to load image' }
+        })
       }
-    }
+      
+      image.src = url
+    })
   } catch (error) {
     console.error('Photo metadata extraction error:', error)
     // エラーの場合はデフォルト値を返す
