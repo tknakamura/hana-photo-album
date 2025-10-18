@@ -116,11 +116,11 @@ export default function GalleryPage() {
     setSelectedPhoto(photos[newIndex])
   }
 
-  const handleLogout = () => {
-    authLogout()
-    setCurrentUser(null)
-    router.push('/login')
-  }
+  // const handleLogout = () => {
+  //   authLogout()
+  //   setCurrentUser(null)
+  //   router.push('/login')
+  // }
 
   const sortedPhotos = [...photos].sort((a, b) => {
     const dateA = new Date(a.taken_at).getTime()

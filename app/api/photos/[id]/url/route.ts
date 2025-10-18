@@ -3,14 +3,14 @@ import { getPool } from '@/lib/database'
 import { createPresignedGet } from '@/lib/r2'
 import { getCurrentUserFromRequest } from '@/lib/auth'
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const user = await getCurrentUserFromRequest(req)
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const photoId = params.id
+    const { id: photoId } = await params
     const variant = req.nextUrl.searchParams.get('variant') || 'large'
 
     const pool = getPool()

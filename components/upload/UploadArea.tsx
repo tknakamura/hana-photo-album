@@ -31,7 +31,7 @@ export default function UploadArea({
   onUpload, 
   maxFiles = 10, 
   maxSize = 50 * 1024 * 1024, // 50MB
-  acceptedTypes = ['image/*', 'video/*'],
+  acceptedTypes: _acceptedTypes = ['image/*', 'video/*'],
   className 
 }: UploadAreaProps) {
   const [uploadFiles, setUploadFiles] = useState<UploadFile[]>([])
@@ -90,7 +90,7 @@ export default function UploadArea({
   }, [uploadFiles, onUpload, uploadFileToR2])
 
   // R2へのアップロード処理
-  const uploadFileToR2 = async (uploadFile: UploadFile) => {
+  const uploadFileToR2 = useCallback(async (uploadFile: UploadFile) => {
     try {
       updateFileStatus(uploadFile.id, 'uploading', 0)
       
@@ -155,7 +155,7 @@ export default function UploadArea({
       console.error('Upload error:', error)
       updateFileStatus(uploadFile.id, 'error', 0, error instanceof Error ? error.message : 'Upload failed')
     }
-  }
+  }, [])
 
   const updateFileStatus = (fileId: string, status: UploadFile['status'], progress?: number, error?: string) => {
     setUploadFiles(prev => prev.map(f => 
