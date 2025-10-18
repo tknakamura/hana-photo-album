@@ -225,7 +225,7 @@ export default function LoginPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
-            className="smugmug-title mb-4"
+            className="smugmug-title mb-4 text-white"
           >
             HANA LOG
           </motion.h1>
@@ -234,7 +234,7 @@ export default function LoginPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6 }}
-            className="smugmug-subtitle"
+            className="smugmug-subtitle text-white"
           >
             Family Growth Records
           </motion.p>
@@ -255,7 +255,7 @@ export default function LoginPage() {
                     type="text"
                     value={formState.username}
                     onChange={handleUsernameChange}
-                    className={`input-smugmug ${formState.validationErrors.username ? 'border-white focus:border-white' : 'focus:border-white'}`}
+                    className={`input-smugmug text-white ${formState.validationErrors.username ? 'border-white focus:border-white' : 'focus:border-white'}`}
                     placeholder="ユーザーIDを入力"
                     required
                     disabled={formState.isLoading}
@@ -287,7 +287,7 @@ export default function LoginPage() {
                     type="password"
                     value={formState.password}
                     onChange={handlePasswordChange}
-                    className={`input-smugmug ${formState.validationErrors.password ? 'border-white focus:border-white' : 'focus:border-white'}`}
+                    className={`input-smugmug text-white ${formState.validationErrors.password ? 'border-white focus:border-white' : 'focus:border-white'}`}
                     placeholder="••••••••"
                     required
                     disabled={formState.isLoading}
@@ -327,7 +327,7 @@ export default function LoginPage() {
                 <motion.button
                   type="submit"
                   disabled={formState.isLoading || Object.keys(formState.validationErrors).length > 0}
-                  className="smugmug-button w-full disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="smugmug-button w-full text-white disabled:opacity-50 disabled:cursor-not-allowed"
                   whileHover={{ scale: formState.isLoading ? 1 : 1.02 }}
                   whileTap={{ scale: formState.isLoading ? 1 : 0.98 }}
                   aria-describedby={formState.loginAttempts > 0 ? "login-attempts" : undefined}
