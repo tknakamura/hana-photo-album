@@ -209,10 +209,10 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen relative">
+    <div className="login-page min-h-screen relative">
       <BackgroundVideo />
-      <div className="relative z-10 min-h-screen flex items-center justify-center px-6">
-        <div className="w-full max-w-sm mx-auto" style={{ maxWidth: '428px' }}>
+      <div className="relative z-10 min-h-screen flex items-center justify-center px-8">
+        <div className="w-full max-w-md mx-auto grid grid-cols-1 gap-0" style={{ maxWidth: '420px' }}>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -220,12 +220,12 @@ export default function LoginPage() {
             className="w-full"
           >
             {/* SmugMug風ヘッダー */}
-            <div className="text-center mb-12">
+            <div className="header-section">
           <motion.h1
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
-            className="smugmug-title mb-4 text-white"
+            className="smugmug-title text-white"
           >
             HANA LOG
           </motion.h1>
@@ -245,69 +245,75 @@ export default function LoginPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8 }}
-              className="smugmug-card px-10 py-8"
+              className="smugmug-card mx-5"
             >
-              <form onSubmit={handleLogin} className="space-y-6">
-                <div className="relative mb-6">
-                  <input
-                    ref={usernameRef}
-                    id="username"
-                    type="text"
-                    value={formState.username}
-                    onChange={handleUsernameChange}
-                    className={`input-smugmug w-full text-white ${formState.validationErrors.username ? 'border-white focus:border-white' : 'focus:border-white'}`}
-                    placeholder="ユーザーIDを入力"
-                    required
-                    disabled={formState.isLoading}
-                    autoComplete="username"
-                    aria-invalid={!!formState.validationErrors.username}
-                    aria-describedby={formState.validationErrors.username ? "username-error" : undefined}
-                  />
-                  {formState.username && !formState.validationErrors.username && (
-                    <CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-white" />
+              <form onSubmit={handleLogin} className="login-form">
+                {/* ユーザーID入力セクション */}
+                <div className="form-section">
+                  <div className="relative">
+                    <input
+                      ref={usernameRef}
+                      id="username"
+                      type="text"
+                      value={formState.username}
+                      onChange={handleUsernameChange}
+                      className=""
+                      placeholder="ユーザーIDを入力"
+                      required
+                      disabled={formState.isLoading}
+                      autoComplete="username"
+                      aria-invalid={!!formState.validationErrors.username}
+                      aria-describedby={formState.validationErrors.username ? "username-error" : undefined}
+                    />
+                    {formState.username && !formState.validationErrors.username && (
+                      <CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-white" />
+                    )}
+                  </div>
+                  {formState.validationErrors.username && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="flex items-center text-sm text-white"
+                      id="username-error"
+                      role="alert"
+                    >
+                      <AlertCircle className="w-4 h-4 mr-2 text-white" />
+                      {formState.validationErrors.username}
+                    </motion.div>
                   )}
                 </div>
-                {formState.validationErrors.username && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="flex items-center mt-3 mb-4 text-sm text-white"
-                    id="username-error"
-                    role="alert"
-                  >
-                    <AlertCircle className="w-4 h-4 mr-2 text-white" />
-                    {formState.validationErrors.username}
-                  </motion.div>
-                )}
 
-                <div className="relative">
-                  <input
-                    ref={passwordRef}
-                    id="password"
-                    type="password"
-                    value={formState.password}
-                    onChange={handlePasswordChange}
-                    className={`input-smugmug w-full text-white ${formState.validationErrors.password ? 'border-white focus:border-white' : 'focus:border-white'}`}
-                    placeholder="••••••••"
-                    required
-                    disabled={formState.isLoading}
-                    autoComplete="current-password"
-                    aria-invalid={!!formState.validationErrors.password}
-                    aria-describedby={formState.validationErrors.password ? "password-error" : undefined}
-                  />
+                {/* パスワード入力セクション */}
+                <div className="form-section">
+                  <div className="relative">
+                    <input
+                      ref={passwordRef}
+                      id="password"
+                      type="password"
+                      value={formState.password}
+                      onChange={handlePasswordChange}
+                      className=""
+                      placeholder="••••••••"
+                      required
+                      disabled={formState.isLoading}
+                      autoComplete="current-password"
+                      aria-invalid={!!formState.validationErrors.password}
+                      aria-describedby={formState.validationErrors.password ? "password-error" : undefined}
+                    />
+                  </div>
+                  {formState.validationErrors.password && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="flex items-center text-sm text-white"
+                      id="password-error"
+                      role="alert"
+                    >
+                      <AlertCircle className="w-4 h-4 mr-2 text-white" />
+                      {formState.validationErrors.password}
+                    </motion.div>
+                  )}
                 </div>
-                {formState.validationErrors.password && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="flex items-center mt-3 mb-4 text-sm text-white"
-                    id="password-error"
-                    role="alert"
-                  >
-                    <AlertCircle className="w-4 h-4 mr-2 text-white" />
-                    {formState.validationErrors.password}
-                  </motion.div>
-                )}
 
                 {formState.error && (
                   <motion.div
@@ -324,21 +330,18 @@ export default function LoginPage() {
                   </motion.div>
                 )}
 
+                {/* ログインボタン */}
                 <motion.button
                   type="submit"
                   disabled={formState.isLoading || Object.keys(formState.validationErrors).length > 0}
-                  className="smugmug-button w-full text-white disabled:opacity-50 disabled:cursor-not-allowed"
                   whileHover={{ scale: formState.isLoading ? 1 : 1.02 }}
                   whileTap={{ scale: formState.isLoading ? 1 : 0.98 }}
+                  className=""
                   aria-describedby={formState.loginAttempts > 0 ? "login-attempts" : undefined}
                 >
                   {formState.isLoading ? (
                     <div className="flex items-center justify-center space-x-3">
-                      <div className="loading-dots">
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                      </div>
+                      <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
                       <span>ログイン中...</span>
                     </div>
                   ) : (
@@ -361,11 +364,6 @@ export default function LoginPage() {
                 )}
               </form>
 
-          <div className="mt-8 text-center">
-            <p className="text-sm text-white mb-2">
-              家族専用のアルバムです
-            </p>
-          </div>
         </motion.div>
 
           </motion.div>
@@ -377,7 +375,7 @@ export default function LoginPage() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.2 }}
-        className="absolute bottom-20 left-1/2 transform -translate-x-1/2 text-center"
+        className="absolute bottom-20 left-1/2 transform -translate-x-1/2 text-center mx-5"
       >
         <span className="text-sm text-white">Made with love for HANA</span>
       </motion.div>
