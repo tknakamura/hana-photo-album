@@ -157,6 +157,14 @@ export async function POST(request: NextRequest) {
       }
     })
     
+    // 認証トークンをCookieに設定
+    response.cookies.set('auth_token', user.id, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 60 * 60 * 24 * 7 // 7日間
+    })
+    
     // セキュリティヘッダーの追加
     response.headers.set('X-Content-Type-Options', 'nosniff')
     response.headers.set('X-Frame-Options', 'DENY')

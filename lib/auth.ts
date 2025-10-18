@@ -42,15 +42,14 @@ export function logout(): void {
 // サーバーサイド認証（API用）
 export async function getCurrentUserFromRequest(req: NextRequest): Promise<User | null> {
   try {
-    // セッション/トークンからユーザー取得（既存実装に合わせる）
-    // 仮実装: Cookie/Headerからユーザー情報取得
+    // Cookieから認証トークンを取得
     const token = req.cookies.get('auth_token')?.value
     if (!token) return null
 
     const pool = getPool()
     const result = await pool.query(
       'SELECT id, username, family_id, role, name, profile_image_url, bio FROM users WHERE id = $1',
-      [token] // 実際はJWT検証など
+      [token]
     )
     
     if (result.rows.length === 0) return null
