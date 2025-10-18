@@ -41,9 +41,9 @@ export async function authenticateUser(username: string, password: string) {
     
     console.log('Database: User found, checking password...')
     
-    // 生のパスワードとハッシュ化されたパスワードの両方をサポート
+    // 生のパスワードでの認証のみ（crypt関数を使わない）
     const result = await pool.query(
-      'SELECT * FROM users WHERE username = $1 AND (password_hash = $2 OR password_hash = crypt($2, password_hash))',
+      'SELECT * FROM users WHERE username = $1 AND password_hash = $2',
       [username, password]
     )
     

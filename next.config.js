@@ -48,7 +48,12 @@ const nextConfig = {
         trace_events: false,
         v8: false,
         wasi: false,
-        worker_threads: false,
+      }
+      
+      // requireを無効化
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        'require': false,
       }
       
       // サーバーサイド専用ライブラリをクライアントサイドで除外
