@@ -78,3 +78,4 @@ export interface LoginStats {
   failedLogins: number
   averageResponseTime: number
 }
+

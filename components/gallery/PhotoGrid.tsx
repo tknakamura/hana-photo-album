@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import React, { useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
 import { Calendar, Camera, Play } from 'lucide-react'
@@ -8,14 +8,17 @@ import { cn, formatDateShort } from '@/lib/utils'
 
 interface Photo {
   id: string
-  file_path: string
-  thumbnail_path?: string
+  bucket_key: string
   original_filename: string
   taken_at: string
-  uploaded_at: string
+  created_at: string
   caption?: string
-  metadata?: Record<string, unknown>
-  mime_type: string
+  exif_json?: Record<string, unknown>
+  mime: string
+  width?: number
+  height?: number
+  bytes: number
+  owner_name?: string
 }
 
 interface PhotoGridProps {
@@ -26,12 +29,39 @@ interface PhotoGridProps {
 
 export default function PhotoGrid({ photos, onPhotoClick, className }: PhotoGridProps) {
   const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set())
+  const [imageUrls, setImageUrls] = useState<Record<string, string>>({})
 
   const handleImageLoad = useCallback((photoId: string) => {
     setLoadedImages(prev => new Set(prev).add(photoId))
   }, [])
 
   const isVideo = (mimeType: string) => mimeType.startsWith('video/')
+
+  // 署名付きURLを取得
+  const getImageUrl = useCallback(async (photoId: string, variant: string = 'thumb') => {
+    if (imageUrls[photoId]) return imageUrls[photoId]
+
+    try {
+      const response = await fetch(`/api/photos/${photoId}/url?variant=${variant}`)
+      if (!response.ok) throw new Error('Failed to get image URL')
+      
+      const { url } = await response.json()
+      setImageUrls(prev => ({ ...prev, [photoId]: url }))
+      return url
+    } catch (error) {
+      console.error('Error getting image URL:', error)
+      return '/placeholder.jpg' // フォールバック
+    }
+  }, [imageUrls])
+
+  // 画像URLを事前取得
+  React.useEffect(() => {
+    photos.forEach(photo => {
+      if (!isVideo(photo.mime) && !imageUrls[photo.id]) {
+        getImageUrl(photo.id, 'thumb')
+      }
+    })
+  }, [photos, getImageUrl, imageUrls, isVideo])
 
   if (photos.length === 0) {
     return (
@@ -75,7 +105,7 @@ export default function PhotoGrid({ photos, onPhotoClick, className }: PhotoGrid
           >
             {/* 画像/動画コンテナ */}
             <div className="relative w-full h-full overflow-hidden">
-                  {isVideo(photo.mime_type) ? (
+                  {isVideo(photo.mime) ? (
                     <div className="w-full h-full bg-gray-100 flex items-center justify-center">
                       <div className="text-center">
                         <div className="w-12 h-12 bg-white/80 rounded-full flex items-center justify-center mb-2 mx-auto">
@@ -92,17 +122,19 @@ export default function PhotoGrid({ photos, onPhotoClick, className }: PhotoGrid
                       )}
                   
                   {/* 実際の画像 */}
-                  <Image
-                    src={photo.thumbnail_path || photo.file_path}
-                    alt={photo.caption || photo.original_filename}
-                    fill
-                    className={cn(
-                      'image-optimized transition-opacity duration-300',
-                      loadedImages.has(photo.id) ? 'opacity-100' : 'opacity-0'
-                    )}
-                    onLoad={() => handleImageLoad(photo.id)}
-                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                  />
+                  {imageUrls[photo.id] && (
+                    <Image
+                      src={imageUrls[photo.id]}
+                      alt={photo.caption || photo.original_filename}
+                      fill
+                      className={cn(
+                        'image-optimized transition-opacity duration-300',
+                        loadedImages.has(photo.id) ? 'opacity-100' : 'opacity-0'
+                      )}
+                      onLoad={() => handleImageLoad(photo.id)}
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                    />
+                  )}
                 </>
               )}
 
@@ -127,7 +159,7 @@ export default function PhotoGrid({ photos, onPhotoClick, className }: PhotoGrid
               )}
 
               {/* 動画アイコン */}
-              {isVideo(photo.mime_type) && (
+              {isVideo(photo.mime) && (
                 <div className="absolute top-2 right-2">
                   <div className="w-6 h-6 bg-black/50 rounded-full flex items-center justify-center">
                     <Play className="w-3 h-3 text-white ml-0.5" />

@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Upload, Video, X, CheckCircle, AlertCircle } from 'lucide-react'
 import { cn, isValidMediaFile, getFileType, formatFileSize } from '@/lib/utils'
 import { extractPhotoMetadata, PhotoMetadata } from '@/lib/exif'
+import { getCurrentUser } from '@/lib/auth'
 
 interface UploadFile {
   file: File
@@ -39,6 +40,13 @@ export default function UploadArea({
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     setIsProcessing(true)
     
+    const user = getCurrentUser()
+    if (!user) {
+      console.error('User not authenticated')
+      setIsProcessing(false)
+      return
+    }
+    
     const newFiles: UploadFile[] = []
     
     for (const file of acceptedFiles) {
@@ -71,9 +79,91 @@ export default function UploadArea({
     }
     
     setUploadFiles(prev => [...prev, ...newFiles])
+    
+    // アップロード開始
+    for (const uploadFile of newFiles) {
+      await uploadFileToR2(uploadFile)
+    }
+    
     onUpload([...uploadFiles, ...newFiles])
     setIsProcessing(false)
   }, [uploadFiles, onUpload])
+
+  // R2へのアップロード処理
+  const uploadFileToR2 = async (uploadFile: UploadFile) => {
+    try {
+      updateFileStatus(uploadFile.id, 'uploading', 0)
+      
+      // SHA256計算
+      const arrayBuffer = await uploadFile.file.arrayBuffer()
+      const hashBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer)
+      const hashArray = Array.from(new Uint8Array(hashBuffer))
+      const sha256 = hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
+      
+      // アップロード初期化
+      const initResponse = await fetch('/api/uploads/init', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          filename: uploadFile.file.name,
+          size: uploadFile.file.size,
+          mime: uploadFile.file.type,
+          sha256
+        })
+      })
+      
+      if (!initResponse.ok) {
+        const error = await initResponse.json()
+        if (error.duplicate) {
+          updateFileStatus(uploadFile.id, 'success', 100)
+          return
+        }
+        throw new Error(error.error || 'Upload init failed')
+      }
+      
+      const { putUrl, photoId } = await initResponse.json()
+      
+      // R2へ直接アップロード
+      const uploadResponse = await fetch(putUrl, {
+        method: 'PUT',
+        body: uploadFile.file,
+        headers: {
+          'Content-Type': uploadFile.file.type
+        }
+      })
+      
+      if (!uploadResponse.ok) {
+        throw new Error('R2 upload failed')
+      }
+      
+      updateFileStatus(uploadFile.id, 'uploading', 90)
+      
+      // アップロード完了
+      const completeResponse = await fetch('/api/uploads/complete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ photoId, key: `orig/${getCurrentUser()?.family_id}/${photoId}.${uploadFile.file.type.split('/')[1]}` })
+      })
+      
+      if (!completeResponse.ok) {
+        throw new Error('Upload complete failed')
+      }
+      
+      updateFileStatus(uploadFile.id, 'success', 100)
+      
+    } catch (error) {
+      console.error('Upload error:', error)
+      updateFileStatus(uploadFile.id, 'error', 0, error instanceof Error ? error.message : 'Upload failed')
+    }
+  }
+
+  const updateFileStatus = (fileId: string, status: UploadFile['status'], progress?: number, error?: string) => {
+    setUploadFiles(prev => prev.map(f => 
+      f.id === fileId 
+        ? { ...f, status, progress: progress ?? f.progress, error }
+        : f
+    ))
+  }
 
   const { getRootProps, getInputProps, isDragActive, fileRejections } = useDropzone({
     onDrop,
@@ -94,13 +184,6 @@ export default function UploadArea({
     })
   }
 
-  // const updateFileStatus = (fileId: string, status: UploadFile['status'], progress?: number, error?: string) => {
-  //   setUploadFiles(prev => prev.map(f => 
-  //     f.id === fileId 
-  //       ? { ...f, status, progress: progress ?? f.progress, error }
-  //       : f
-  //   ))
-  // }
 
   return (
     <div className={cn('space-y-4', className)}>

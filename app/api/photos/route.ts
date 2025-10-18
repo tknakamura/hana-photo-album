@@ -1,37 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getPhotos } from '@/lib/database'
+import { getPool } from '@/lib/database'
+import { getCurrentUserFromRequest } from '@/lib/auth'
 
-export async function GET(request: NextRequest) {
+export async function GET(req: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
-    const limit = parseInt(searchParams.get('limit') || '50')
-    const offset = parseInt(searchParams.get('offset') || '0')
-
-    const photos = await getPhotos(limit, offset)
-
-    return NextResponse.json({ 
-      success: true, 
-      photos: photos.map(photo => ({
-        id: photo.id,
-        file_path: photo.file_path,
-        thumbnail_path: photo.thumbnail_path,
-        original_filename: photo.original_filename,
-        mime_type: photo.mime_type,
-        taken_at: photo.taken_at,
-        uploaded_at: photo.uploaded_at,
-        caption: photo.caption,
-        metadata: photo.metadata
-      }))
-    })
-
-  } catch (error) {
-    console.error('写真取得エラー:', error)
-    
-    // データベース接続エラーの場合
-    if (error instanceof Error && error.message.includes('DATABASE_URL')) {
-      return NextResponse.json({ error: 'データベース接続エラー: 環境変数が設定されていません' }, { status: 500 })
+    const user = await getCurrentUserFromRequest(req)
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
-    
-    return NextResponse.json({ error: '写真の取得に失敗しました' }, { status: 500 })
+
+    const url = new URL(req.url)
+    const limit = parseInt(url.searchParams.get('limit') || '50')
+    const offset = parseInt(url.searchParams.get('offset') || '0')
+
+    const pool = getPool()
+    const result = await pool.query(
+      `SELECT p.*, u.name as owner_name 
+       FROM photos p 
+       JOIN users u ON p.owner_user_id = u.id 
+       WHERE p.family_id = $1 
+       ORDER BY p.taken_at DESC 
+       LIMIT $2 OFFSET $3`,
+      [user.family_id, limit, offset]
+    )
+
+    return NextResponse.json({ photos: result.rows })
+  } catch (error) {
+    console.error('Get photos error:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

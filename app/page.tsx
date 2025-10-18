@@ -19,7 +19,7 @@ export default function HomePage() {
           const parsedUser = JSON.parse(user)
           if (parsedUser && parsedUser.username) {
             console.log('Valid user found, redirecting to gallery')
-            router.push('/gallery')
+            router.push('/home')
             return
           } else {
             console.log('Invalid user data, clearing localStorage')

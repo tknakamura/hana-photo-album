@@ -3,8 +3,9 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Save, Camera, User as UserIcon } from 'lucide-react'
+import { ArrowLeft, Save, Camera, User as UserIcon, LogOut, Settings } from 'lucide-react'
 import { logout as authLogout, User } from '@/lib/auth'
+import BottomTabBar from '@/components/ui/BottomTabBar'
 import Image from 'next/image'
 
 export default function ProfilePage() {
@@ -101,31 +102,31 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* SmugMug風ヘッダー */}
+    <div className="min-h-screen bg-[#FAFAF8]">
+      {/* ヘッダー */}
       <motion.header
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ type: "spring", stiffness: 100, damping: 20 }}
-        className="smugmug-nav p-4 flex items-center justify-between"
+        className="bg-white border-b border-gray-200 px-4 py-4"
       >
-        <motion.button
-          onClick={() => router.back()}
-          className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          <ArrowLeft className="w-5 h-5" />
-          <span>戻る</span>
-        </motion.button>
-
-        <div className="flex items-center space-x-2">
-          <UserIcon className="w-6 h-6 text-gray-700" />
-          <h1 className="text-xl font-bold text-gray-800">プロフィール</h1>
-        </div>
-
-        <motion.button
-          onClick={handleLogout}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <motion.button
+              onClick={() => router.back()}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            >
+              <ArrowLeft className="w-6 h-6 text-gray-600" />
+            </motion.button>
+            <div>
+              <h1 className="text-xl font-bold text-gray-800">設定</h1>
+              <p className="text-sm text-gray-500">プロフィールとアカウント</p>
+            </div>
+          </div>
+          <motion.button
+            onClick={handleLogout}
           className="text-sm text-gray-600 hover:text-gray-800 transition-colors"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -135,7 +136,7 @@ export default function ProfilePage() {
       </motion.header>
 
       {/* メインコンテンツ */}
-      <div className="smugmug-container py-6">
+      <div className="px-4 py-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -143,7 +144,7 @@ export default function ProfilePage() {
           className="space-y-6"
         >
           {/* プロフィール画像 */}
-          <div className="smugmug-card p-6">
+          <div className="bg-white rounded-2xl p-6 shadow-sm">
             <div className="text-center space-y-4">
               <div className="relative inline-block">
                 {profileImagePreview ? (
@@ -271,6 +272,8 @@ export default function ProfilePage() {
           </div>
         </motion.div>
       </div>
+      
+      <BottomTabBar />
     </div>
   )
 }

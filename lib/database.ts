@@ -79,13 +79,13 @@ export async function getUserById(id: number) {
   }
 }
 
-// 写真一覧取得
-export async function getPhotos(limit = 50, offset = 0) {
+// 写真一覧取得（family_idフィルタ対応）
+export async function getPhotos(familyId: string, limit = 50, offset = 0) {
   try {
     const pool = getPool()
     const result = await pool.query(
-      'SELECT * FROM photos ORDER BY taken_at DESC LIMIT $1 OFFSET $2',
-      [limit, offset]
+      'SELECT * FROM photos WHERE family_id = $1 ORDER BY taken_at DESC LIMIT $2 OFFSET $3',
+      [familyId, limit, offset]
     )
     return result.rows
   } catch (error) {

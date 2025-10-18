@@ -8,14 +8,17 @@ import { cn, formatDate } from '@/lib/utils'
 
 interface Photo {
   id: string
-  file_path: string
-  thumbnail_path?: string
+  bucket_key: string
   original_filename: string
   taken_at: string
-  uploaded_at: string
+  created_at: string
   caption?: string
-  metadata?: Record<string, unknown>
-  mime_type: string
+  exif_json?: Record<string, unknown>
+  mime: string
+  width?: number
+  height?: number
+  bytes: number
+  owner_name?: string
 }
 
 interface PhotoModalProps {
@@ -28,11 +31,23 @@ interface PhotoModalProps {
 
 export default function PhotoModal({ photo, photos, isOpen, onClose, onNavigate }: PhotoModalProps) {
   const [imageLoaded, setImageLoaded] = useState(false)
+  const [imageUrl, setImageUrl] = useState<string>('')
   // const [showControls] = useState(true)
 
   useEffect(() => {
     if (photo) {
       setImageLoaded(false)
+      // 署名付きURLを取得
+      fetch(`/api/photos/${photo.id}/url?variant=large`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.url) {
+            setImageUrl(data.url)
+          }
+        })
+        .catch(error => {
+          console.error('Error getting image URL:', error)
+        })
     }
   }, [photo])
 
@@ -62,7 +77,7 @@ export default function PhotoModal({ photo, photos, isOpen, onClose, onNavigate 
   const currentIndex = photos.findIndex(p => p.id === photo.id)
   const hasPrev = currentIndex > 0
   const hasNext = currentIndex < photos.length - 1
-  const isVideo = photo.mime_type.startsWith('video/')
+  const isVideo = photo.mime.startsWith('video/')
 
   return (
     <AnimatePresence>
@@ -134,17 +149,19 @@ export default function PhotoModal({ photo, photos, isOpen, onClose, onNavigate 
                   )}
                   
                   {/* 実際の画像 */}
-                  <Image
-                    src={photo.file_path}
-                    alt={photo.caption || photo.original_filename}
-                    fill
-                    className={cn(
-                      'image-optimized transition-opacity duration-300',
-                      imageLoaded ? 'opacity-100' : 'opacity-0'
-                    )}
-                    onLoad={() => setImageLoaded(true)}
-                    priority
-                  />
+                  {imageUrl && (
+                    <Image
+                      src={imageUrl}
+                      alt={photo.caption || photo.original_filename}
+                      fill
+                      className={cn(
+                        'image-optimized transition-opacity duration-300',
+                        imageLoaded ? 'opacity-100' : 'opacity-0'
+                      )}
+                      onLoad={() => setImageLoaded(true)}
+                      priority
+                    />
+                  )}
                 </>
               )}
 

@@ -1,26 +1,66 @@
-/* Google Fonts - 可愛いフォント */
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800&display=swap');
+/* Google Fonts - UIUX.ini準拠 */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* デザインシステム.ini準拠のCSS変数 */
+:root {
+  /* カラーパレット */
+  --color-primary: #FF8A80;        /* Family Coral */
+  --color-secondary: #81D4FA;      /* Sky Blue */
+  --color-bg: #FAFAF8;             /* Ivory Light */
+  --color-surface: #FFFFFF;        /* White */
+  --color-accent: #F4E1C1;         /* Sand Beige */
+  --color-text: #333333;           /* Charcoal */
+  --color-text-secondary: #666666; /* Gray 600 */
+  --color-border: #DDDDDD;         /* Gray 300 */
+  --color-success: #81C784;        /* Leaf Green */
+  --color-error: #E57373;          /* Sunset Red */
+  
+  /* 角丸 */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  
+  /* シャドウ */
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 8px rgba(0,0,0,0.1);
+  --shadow-lg: 0 8px 16px rgba(0,0,0,0.15);
+  
+  /* トランジション */
+  --transition-fast: 0.2s ease-in-out;
+  --transition-normal: 0.3s ease-in-out;
+  --transition-slow: 0.5s ease-in-out;
+  
+  /* ステートカラー */
+  --state-success-bg: #E8F5E9;
+  --state-success-text: #2E7D32;
+  --state-error-bg: #FFEBEE;
+  --state-error-text: #C62828;
+  --state-warning-bg: #FFF8E1;
+  --state-warning-text: #F57F17;
+  --state-info-bg: #E3F2FD;
+  --state-info-text: #1565C0;
+}
+
 /* ベーススタイル */
 html {
-  font-family: 'Nunito', 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+  font-family: 'Noto Sans JP', 'Inter', 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
   scroll-behavior: smooth;
   margin: 0;
   padding: 0;
 }
 
 body {
-  background: #fefdf8;
+  background: var(--color-bg); /* Ivory Light */
   min-height: 100vh;
-  color: #FFFFFF;
+  color: var(--color-text); /* Charcoal */
   -webkit-font-smoothing: antialiased;
   margin: 0;
   padding: 0;
-  padding-bottom: 4rem;
+  padding-bottom: 80px; /* 下部タブバー用のスペース */
 }
 
 /* ログインページ専用の背景設定 */
@@ -39,93 +79,284 @@ body.login-page {
   -webkit-touch-callout: none;
 }
 
-/* 可愛いボタンスタイル */
-.btn-cute {
-  padding: 0.75rem 1.5rem;
-  border-radius: 1rem;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  transform: translateY(0);
-}
-
-.btn-cute:hover {
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  transform: translateY(-2px);
-}
-
-.btn-cute:active {
-  transform: scale(0.95) translateY(0);
-}
-
+/* デザインシステム.ini準拠のボタンスタイル */
 .btn-primary {
-  background: #f18f52;
+  background: var(--color-primary); /* Family Coral */
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
+  padding: 12px 20px;
   font-weight: 500;
-  transition: all 0.2s ease;
+  font-family: 'Inter', sans-serif;
+  transition: var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
 }
 
 .btn-primary:hover {
-  background: #e67e22;
+  background: #FF6B6B; /* 少し暗いFamily Coral */
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(241, 143, 82, 0.3);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+/* ステートカラークラス */
+.state-success {
+  background: var(--state-success-bg);
+  color: var(--state-success-text);
+  border: 1px solid var(--state-success-text);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+}
+
+.state-error {
+  background: var(--state-error-bg);
+  color: var(--state-error-text);
+  border: 1px solid var(--state-error-text);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+}
+
+.state-warning {
+  background: var(--state-warning-bg);
+  color: var(--state-warning-text);
+  border: 1px solid var(--state-warning-text);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+}
+
+.state-info {
+  background: var(--state-info-bg);
+  color: var(--state-info-text);
+  border: 1px solid var(--state-info-text);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+}
+
+/* デザインシステム.ini準拠のタイポグラフィ */
+.text-h1 {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--color-text);
+}
+
+.text-h2 {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--color-text);
+}
+
+.text-body {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--color-text);
+}
+
+.text-caption {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+}
+
+.text-ui {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--color-text);
+}
+
+/* デザインシステム.ini準拠のアニメーション */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* アニメーションクラス */
+.animate-fade-in-up {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+.animate-pop-in {
+  animation: popIn 0.2s ease-out-back;
+}
+
+/* ページ遷移アニメーション */
+.page-transition {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+/* ボタンタップアニメーション */
+.btn-tap {
+  transition: transform 0.1s ease-in-out;
+}
+
+.btn-tap:active {
+  transform: scale(0.95);
+}
+
+/* ホバーエフェクト */
+.hover-lift {
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .btn-secondary {
-  background: #f8f9fa;
-  color: #202124;
-  border: 1px solid #e8eaed;
-  border-radius: 8px;
+  background: var(--color-secondary); /* Sky Blue */
+  color: white;
+  border: none;
+  border-radius: var(--radius-lg);
+  padding: 12px 20px;
   font-weight: 500;
-  transition: all 0.2s ease;
+  font-family: 'Inter', sans-serif;
+  transition: var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
 }
 
 .btn-secondary:hover {
-  background: #f1f3f4;
-  border-color: #dadce0;
+  background: #4FC3F7; /* 少し暗いSky Blue */
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
 }
 
 .btn-ghost {
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(8px);
-  color: #202124;
-  border: 1px solid #e8eaed;
+  background: transparent;
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 12px 20px;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+  transition: var(--transition-fast);
+  cursor: pointer;
 }
 
 .btn-ghost:hover {
-  background: rgba(255, 255, 255, 1);
-  border-color: #dadce0;
+  background: var(--color-surface);
+  border-color: var(--color-primary);
 }
 
-/* カードスタイル */
-.card-cute {
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e8eaed;
-  transition: all 0.2s ease;
-  margin: 0 auto;
-  max-width: 100%;
+.btn-danger {
+  background: var(--color-error); /* Sunset Red */
+  color: white;
+  border: none;
+  border-radius: var(--radius-lg);
+  padding: 12px 20px;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+  transition: var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
 }
 
-.card-cute:hover {
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+.btn-danger:hover {
+  background: #D32F2F; /* 少し暗いSunset Red */
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+/* デザインシステム.ini準拠のカードスタイル */
+.card {
+  background: var(--color-surface); /* White */
+  border-radius: var(--radius-md); /* 12px */
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-normal);
+  overflow: hidden;
+  padding: 16px;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
   transform: translateY(-2px);
 }
 
-/* 改善された入力フィールドスタイル */
-.input-cute {
+.card-large {
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-normal);
+  overflow: hidden;
+  padding: 24px;
+}
+
+.card-large:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+/* デザインシステム.ini準拠の入力フィールドスタイル */
+.input {
   width: 100%;
   padding: 12px 16px;
-  border-radius: 8px;
-  border: 1px solid #e8eaed;
-  background: #ffffff;
-  color: #202124;
-  transition: all 0.2s ease;
+  border-radius: var(--radius-md); /* 12px */
+  border: 1px solid var(--color-border); /* Gray 300 */
+  background: var(--color-surface); /* White */
+  color: var(--color-text); /* Charcoal */
+  transition: var(--transition-fast);
   font-size: 16px;
-  font-family: inherit;
+  font-family: 'Noto Sans JP', sans-serif;
   min-height: 48px;
   touch-action: manipulation;
 }

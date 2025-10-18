@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { ArrowLeft, Upload, Camera, Heart } from 'lucide-react'
 import UploadArea, { UploadFile } from '@/components/upload/UploadArea'
+import BottomTabBar from '@/components/ui/BottomTabBar'
 
 export default function UploadPage() {
   const [uploadFiles, setUploadFiles] = useState<UploadFile[]>([])
@@ -77,34 +78,34 @@ export default function UploadPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* SmugMug風ヘッダー */}
+    <div className="min-h-screen bg-[#FAFAF8]">
+      {/* ヘッダー */}
       <motion.header
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ type: "spring", stiffness: 100, damping: 20 }}
-        className="smugmug-nav p-4 flex items-center justify-between"
+        className="bg-white border-b border-gray-200 px-4 py-4"
       >
-        <motion.button
-          onClick={() => router.back()}
-          className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          <ArrowLeft className="w-5 h-5" />
-          <span>戻る</span>
-        </motion.button>
-
-        <div className="flex items-center space-x-2">
-          <Camera className="w-6 h-6 text-gray-700" />
-          <h1 className="text-xl font-bold text-gray-800">写真をアップロード</h1>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <motion.button
+              onClick={() => router.back()}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            >
+              <ArrowLeft className="w-6 h-6 text-gray-600" />
+            </motion.button>
+            <div>
+              <h1 className="text-xl font-bold text-gray-800">写真・動画を追加</h1>
+              <p className="text-sm text-gray-500">{uploadFiles.length}件のファイル</p>
+            </div>
+          </div>
         </div>
-
-        <div className="w-16" /> {/* スペーサー */}
       </motion.header>
 
       {/* メインコンテンツ */}
-      <div className="smugmug-container py-6">
+      <div className="px-4 py-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -112,7 +113,7 @@ export default function UploadPage() {
           className="space-y-6"
         >
           {/* アップロードエリア */}
-          <div className="smugmug-card p-6">
+          <div className="bg-white rounded-2xl p-6 shadow-sm">
             <UploadArea
               onUpload={setUploadFiles}
               maxFiles={10}
@@ -179,22 +180,24 @@ export default function UploadPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
-            className="smugmug-card p-6"
+            className="bg-white rounded-2xl p-6 shadow-sm"
           >
             <div className="flex items-start space-x-3">
-              <Heart className="w-5 h-5 text-gray-700 mt-0.5 flex-shrink-0" />
+              <Heart className="w-5 h-5 text-orange-500 mt-0.5 flex-shrink-0" />
               <div className="text-sm text-gray-600">
                 <p className="font-medium mb-1">アップロードのヒント</p>
                 <ul className="space-y-1 text-xs">
                   <li>• 写真の撮影日時が自動的に抽出されます</li>
-                  <li>• 最大10MBまでのファイルをアップロードできます</li>
-                  <li>• JPEG、PNG、GIF、WebP、MP4、WebM形式に対応</li>
+                  <li>• 最大2GBまでのファイルをアップロードできます</li>
+                  <li>• JPEG、PNG、WebP、MP4形式に対応</li>
                 </ul>
               </div>
             </div>
           </motion.div>
         </motion.div>
       </div>
+      
+      <BottomTabBar />
     </div>
   )
 }

@@ -4,21 +4,25 @@ import { useState, useEffect, useCallback } from 'react'
 // import { createClient } from '@/lib/supabase/client' // 不要になったためコメントアウト
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Upload, Camera, LogOut, Grid, List, User as UserIcon, Home } from 'lucide-react'
+import { Upload, Camera, LogOut, Grid, List, User as UserIcon, Home, ArrowLeft } from 'lucide-react'
 import PhotoGrid from '@/components/gallery/PhotoGrid'
 import PhotoModal from '@/components/gallery/PhotoModal'
+import BottomTabBar from '@/components/ui/BottomTabBar'
 import { getCurrentUser, logout as authLogout, User } from '@/lib/auth'
 
 interface Photo {
   id: string
-  file_path: string
-  thumbnail_path?: string
+  bucket_key: string
   original_filename: string
   taken_at: string
-  uploaded_at: string
+  created_at: string
   caption?: string
-  metadata?: Record<string, unknown>
-  mime_type: string
+  exif_json?: Record<string, unknown>
+  mime: string
+  width?: number
+  height?: number
+  bytes: number
+  owner_name?: string
 }
 
 export default function GalleryPage() {
@@ -142,33 +146,45 @@ export default function GalleryPage() {
   }
 
   return (
-    <div className="min-h-screen bg-orange-100 relative" style={{ paddingBottom: '64px' }}>
-      <div className="w-full max-w-sm mx-auto" style={{ maxWidth: '428px' }}>
-      {/* SmugMug風ヘッダー */}
+    <div className="min-h-screen bg-[#FAFAF8]">
+      {/* ヘッダー */}
       <motion.header
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ type: "spring", stiffness: 100, damping: 20 }}
-        className="smugmug-nav p-4 flex items-center justify-between"
+        className="bg-white border-b border-gray-200 px-4 py-4"
       >
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-          className="inline-flex items-center justify-center w-12 h-12 bg-black rounded-full shadow-lg"
-        >
-          <Camera className="w-6 h-6 text-white" />
-        </motion.div>
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-orange-800">HANA LOG</h1>
-          <p className="text-sm text-orange-600">
-            {photos.length}枚の写真
-          </p>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <motion.button
+              onClick={() => router.back()}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            >
+              <ArrowLeft className="w-6 h-6 text-gray-600" />
+            </motion.button>
+            <div>
+              <h1 className="text-xl font-bold text-gray-800">写真一覧</h1>
+              <p className="text-sm text-gray-500">{photos.length}枚の写真</p>
+            </div>
+          </div>
+          <motion.button
+            onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+          >
+            {viewMode === 'grid' ? (
+              <List className="w-6 h-6 text-gray-600" />
+            ) : (
+              <Grid className="w-6 h-6 text-gray-600" />
+            )}
+          </motion.button>
         </div>
-        <div className="w-12"></div>
       </motion.header>
 
-      <main className="flex-grow p-4 pb-20 smugmug-container">
+      <main className="px-4 py-6">
         {loading ? (
           <div className="flex justify-center items-center h-64">
             <div className="loading-dots">
@@ -183,12 +199,16 @@ export default function GalleryPage() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="text-center p-8 smugmug-card"
+                className="text-center p-8 bg-white rounded-2xl shadow-sm"
               >
-                <p className="text-lg text-gray-600">まだ写真がありません。最初の写真をアップロードしましょう！</p>
+                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Camera className="w-8 h-8 text-gray-400" />
+                </div>
+                <p className="text-lg text-gray-600 mb-2">まだ写真がありません</p>
+                <p className="text-sm text-gray-500 mb-6">最初の写真をアップロードしましょう！</p>
                 <motion.button
                   onClick={() => router.push('/upload')}
-                  className="smugmug-button mt-4 inline-flex items-center space-x-2"
+                  className="bg-orange-500 text-white px-6 py-3 rounded-2xl font-medium hover:bg-orange-600 transition-colors inline-flex items-center space-x-2"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -200,7 +220,7 @@ export default function GalleryPage() {
               <PhotoGrid 
                 photos={sortedPhotos} 
                 onPhotoClick={handlePhotoClick}
-                className={viewMode === 'list' ? 'grid-cols-1' : ''}
+                className={viewMode === 'list' ? 'grid-cols-1' : 'grid-cols-2'}
               />
             )}
           </>
@@ -218,79 +238,7 @@ export default function GalleryPage() {
           />
         )}
       </AnimatePresence>
-      </div>
-
-      {/* ボトムタブ */}
-      <div 
-        className="z-50" 
-        style={{ 
-          position: 'fixed',
-          bottom: '0px',
-          left: '0px',
-          right: '0px',
-          width: '100%',
-          height: '64px',
-          backgroundColor: '#ee7800 !important',
-          borderTop: '1px solid #d46900',
-          zIndex: 9999
-        }}
-      >
-        <div className="flex items-center justify-between w-full h-full">
-          <motion.button
-            onClick={() => router.push('/gallery')}
-            className="flex items-center justify-center flex-1"
-            style={{ height: '64px', color: '#FFFFFF', backgroundColor: 'transparent', border: 'none' }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <Home className="w-6 h-6" style={{ color: '#FFFFFF' }} />
-          </motion.button>
-          
-          <motion.button
-            onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
-            className="flex items-center justify-center flex-1"
-            style={{ height: '64px', color: '#FFFFFF', backgroundColor: 'transparent', border: 'none' }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            {viewMode === 'grid' ? (
-              <List className="w-6 h-6" style={{ color: '#FFFFFF' }} />
-            ) : (
-              <Grid className="w-6 h-6" style={{ color: '#FFFFFF' }} />
-            )}
-          </motion.button>
-          
-          <motion.button
-            onClick={() => router.push('/upload')}
-            className="flex items-center justify-center flex-1"
-            style={{ height: '64px', color: '#FFFFFF', backgroundColor: 'transparent', border: 'none' }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <Upload className="w-6 h-6" style={{ color: '#FFFFFF' }} />
-          </motion.button>
-          
-          <motion.button
-            onClick={() => router.push('/profile')}
-            className="flex items-center justify-center flex-1"
-            style={{ height: '64px', color: '#FFFFFF', backgroundColor: 'transparent', border: 'none' }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <UserIcon className="w-6 h-6" style={{ color: '#FFFFFF' }} />
-          </motion.button>
-          
-          <motion.button
-            onClick={handleLogout}
-            className="flex items-center justify-center flex-1"
-            style={{ height: '64px', color: '#FFFFFF', backgroundColor: 'transparent', border: 'none' }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <LogOut className="w-6 h-6" style={{ color: '#FFFFFF' }} />
-          </motion.button>
-        </div>
-      </div>
+      <BottomTabBar />
     </div>
   )
 }

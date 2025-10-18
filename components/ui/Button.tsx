@@ -25,13 +25,13 @@ export default function Button({
   className,
   fullWidth = false,
 }: ButtonProps) {
-  const baseClasses = 'relative inline-flex items-center justify-center font-medium rounded-2xl transition-all duration-300 transform active:scale-95 touch-target'
+  const baseClasses = 'relative inline-flex items-center justify-center font-medium touch-target'
   
   const variantClasses = {
-    primary: 'bg-gradient-to-r from-pink-400 to-purple-500 text-white shadow-lg hover:shadow-xl hover:from-pink-500 hover:to-purple-600',
-    secondary: 'bg-gradient-to-r from-blue-400 to-blue-500 text-white shadow-lg hover:shadow-xl hover:from-blue-500 hover:to-blue-600',
-    ghost: 'bg-white/80 backdrop-blur-sm text-gray-700 border border-pink-200 hover:bg-white/90 hover:shadow-md',
-    danger: 'bg-gradient-to-r from-red-400 to-red-500 text-white shadow-lg hover:shadow-xl hover:from-red-500 hover:to-red-600',
+    primary: 'btn-primary',
+    secondary: 'btn-secondary',
+    ghost: 'btn-ghost',
+    danger: 'btn-danger',
   }
   
   const sizeClasses = {

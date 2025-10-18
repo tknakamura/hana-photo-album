@@ -8,14 +8,16 @@
 - **可愛らしいUI**: パステルカラーベースの子供向けデザイン
 - **自動日付ソート**: EXIFデータから撮影日時を自動読み取り
 - **家族限定**: 招待リンクによる安全なアクセス制御
-- **永久保存**: Supabaseによる信頼性の高いデータ保存
+- **高速ストレージ**: Cloudflare R2による高速・低コストな画像保存
+- **自動サムネイル**: アップロード時の自動サムネイル生成
 
 ## 🛠️ 技術スタック
 
-- **フロントエンド**: Next.js 14 (App Router) + TypeScript + Tailwind CSS
-- **バックエンド**: Supabase (認証、データベース、ストレージ)
-- **デプロイ**: Vercel
-- **画像処理**: sharp (EXIF抽出)、next/image (最適化)
+- **フロントエンド**: Next.js 15 (App Router) + TypeScript + Tailwind CSS
+- **データベース**: Render Managed PostgreSQL
+- **ストレージ**: Cloudflare R2 (署名付きURL)
+- **デプロイ**: Render
+- **画像処理**: sharp (EXIF抽出、サムネイル生成)
 - **アニメーション**: Framer Motion
 
 ## 🚀 セットアップ
@@ -31,18 +33,36 @@ npm install
 `.env.local` ファイルを作成し、以下の環境変数を設定してください：
 
 ```env
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
-NEXT_PUBLIC_APP_URL=http://localhost:3000
+# Database
+DATABASE_URL=postgresql://username:password@host:port/database
+
+# Cloudflare R2
+R2_ENDPOINT=https://your-account-id.r2.cloudflarestorage.com
+R2_BUCKET=hana-photos
+R2_ACCESS_KEY=your-access-key
+R2_SECRET_KEY=your-secret-key
 ```
 
-### 3. Supabaseプロジェクトの設定
+### 3. データベースとR2の設定
 
-1. [Supabase](https://supabase.com)でプロジェクトを作成
-2. `supabase/migrations/` フォルダ内のSQLファイルを実行してデータベースをセットアップ
-3. ストレージバケット `photos` を作成
-4. Row Level Security (RLS) ポリシーを適用
+#### データベース (Render Managed PostgreSQL)
+1. [Render](https://render.com)でPostgreSQLデータベースを作成
+2. `render-migration.sql` を実行してデータベーススキーマをセットアップ
+
+#### Cloudflare R2
+1. [Cloudflare R2](https://dash.cloudflare.com)でバケット `hana-photos` を作成
+2. API Tokenを発行（Read/Write権限）
+3. CORS設定を追加:
+```json
+[
+  {
+    "AllowedOrigins": ["http://localhost:3000", "https://your-domain.com"],
+    "AllowedMethods": ["GET", "PUT", "HEAD"],
+    "AllowedHeaders": ["*"],
+    "MaxAgeSeconds": 3600
+  }
+]
+```
 
 ### 4. 開発サーバーの起動
 
@@ -77,42 +97,49 @@ npm run dev
 
 ## 🔒 セキュリティ
 
-- Supabase RLSによるデータ保護
-- 署名付きURLによる画像アクセス制御
+- family_idによるデータ分離とアクセス制御
+- R2署名付きURLによる画像アクセス制御
 - 家族限定の招待制アクセス
 - 認証されたユーザーのみが写真を閲覧・アップロード可能
+- 重複ファイル検知（SHA256ハッシュ）
 
 ## 📊 データベース構造
 
 ### テーブル
 
-- `family_members`: 家族メンバー情報
+- `users`: 家族メンバー情報（family_idでグループ化）
 - `photos`: 写真・動画のメタデータ
+- `photo_variants`: サムネイル・派生画像の情報
 - `albums`: アルバム情報 (将来の拡張用)
-- `reactions`: いいね・リアクション (将来の拡張用)
+- `album_photos`: アルバムと写真の関連 (将来の拡張用)
 
-### ストレージ
+### R2ストレージ構造
 
-- `photos`: オリジナル画像・動画ファイル
-- `thumbnails`: 自動生成されたサムネイル
+```
+hana-photos/
+├── orig/<family_id>/<photo_id>.jpg    # オリジナル画像
+├── thumb/<family_id>/<photo_id>.webp  # サムネイル (320px)
+└── large/<family_id>/<photo_id>.webp  # 大サイズ (2048px)
+```
 
 ## 🚀 デプロイ
 
-### Vercelへのデプロイ
+### Renderへのデプロイ
 
 1. GitHubリポジトリにプッシュ
-2. [Vercel](https://vercel.com)でプロジェクトをインポート
+2. [Render](https://render.com)でWeb Serviceを作成
 3. 環境変数を設定
 4. デプロイ完了
 
 ### 環境変数の設定
 
-Vercelのダッシュボードで以下の環境変数を設定：
+Renderのダッシュボードで以下の環境変数を設定：
 
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- `SUPABASE_SERVICE_ROLE_KEY`
-- `NEXT_PUBLIC_APP_URL`
+- `DATABASE_URL` (Render Managed PostgreSQLの接続文字列)
+- `R2_ENDPOINT`
+- `R2_BUCKET`
+- `R2_ACCESS_KEY`
+- `R2_SECRET_KEY`
 
 ## 🔮 将来の拡張予定
 
@@ -126,9 +153,10 @@ Vercelのダッシュボードで以下の環境変数を設定：
 
 - **初期費用**: 無料
 - **月額費用**: 
-  - Supabase Free: $0 (1GB ストレージ、2GB 帯域幅)
-  - Supabase Pro: $25 (8GB ストレージ、50GB 帯域幅)
-  - Vercel Hobby: $0
+  - Render Web Service: $7 (Starter)
+  - Render PostgreSQL: $7 (Starter)
+  - Cloudflare R2: $0.015/GB/月 (エグレス無料)
+  - 合計: 約$14/月 + ストレージ料金
 
 ## 📝 ライセンス
 
