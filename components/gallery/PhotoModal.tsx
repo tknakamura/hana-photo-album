@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import Image from 'next/image'
+// import Image from 'next/image' // プレースホルダー画像用にコメントアウト
 import { X, ChevronLeft, ChevronRight, Calendar, Camera, Heart, Download, Share2 } from 'lucide-react'
 import { cn, formatDate } from '@/lib/utils'
 
@@ -150,16 +150,14 @@ export default function PhotoModal({ photo, photos, isOpen, onClose, onNavigate 
                   
                   {/* 実際の画像 */}
                   {imageUrl && (
-                    <Image
+                    <img
                       src={imageUrl}
                       alt={photo.caption || photo.original_filename}
-                      fill
                       className={cn(
-                        'image-optimized transition-opacity duration-300',
+                        'w-full h-full object-contain transition-opacity duration-300',
                         imageLoaded ? 'opacity-100' : 'opacity-0'
                       )}
                       onLoad={() => setImageLoaded(true)}
-                      priority
                     />
                   )}
                 </>

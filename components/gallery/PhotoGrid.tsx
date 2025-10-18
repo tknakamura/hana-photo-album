@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import Image from 'next/image'
+// import Image from 'next/image' // プレースホルダー画像用にコメントアウト
 import { Calendar, Camera, Play } from 'lucide-react'
 import { cn, formatDateShort } from '@/lib/utils'
 
@@ -123,16 +123,14 @@ export default function PhotoGrid({ photos, onPhotoClick, className }: PhotoGrid
                   
                   {/* 実際の画像 */}
                   {imageUrls[photo.id] && (
-                    <Image
+                    <img
                       src={imageUrls[photo.id]}
                       alt={photo.caption || photo.original_filename}
-                      fill
                       className={cn(
-                        'image-optimized transition-opacity duration-300',
+                        'w-full h-full object-cover transition-opacity duration-300',
                         loadedImages.has(photo.id) ? 'opacity-100' : 'opacity-0'
                       )}
                       onLoad={() => handleImageLoad(photo.id)}
-                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                     />
                   )}
                 </>
