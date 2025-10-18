@@ -50,7 +50,19 @@ export default function PhotoGrid({ photos, onPhotoClick, className }: PhotoGrid
       return url
     } catch (error) {
       console.error('Error getting image URL:', error)
-      return '/placeholder.jpg' // フォールバック
+      // エラーの場合はシンプルなデータURIを返す
+      const fallbackSvg = `
+        <svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+          <rect width="100%" height="100%" fill="#E5E7EB"/>
+          <text x="50%" y="50%" text-anchor="middle" dy=".3em" 
+                font-family="Arial, sans-serif" font-size="14" fill="#6B7280">
+            Error Loading
+          </text>
+        </svg>
+      `
+      const fallbackUrl = `data:image/svg+xml;base64,${btoa(fallbackSvg)}`
+      setImageUrls(prev => ({ ...prev, [photoId]: fallbackUrl }))
+      return fallbackUrl
     }
   }, [imageUrls])
 

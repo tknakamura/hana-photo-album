@@ -1,17 +1,11 @@
 /** @type {import('next').nextConfig} */
 const nextConfig = {
       images: {
-        domains: ['localhost', 'via.placeholder.com'],
+        domains: ['localhost'],
         remotePatterns: [
           {
             protocol: 'https',
             hostname: '*.onrender.com',
-            port: '',
-            pathname: '/**',
-          },
-          {
-            protocol: 'https',
-            hostname: 'via.placeholder.com',
             port: '',
             pathname: '/**',
           },

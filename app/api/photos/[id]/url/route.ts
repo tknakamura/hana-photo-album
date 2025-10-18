@@ -9,10 +9,28 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     const { id: photoId } = await params
     const variant = req.nextUrl.searchParams.get('variant') || 'large'
 
-    // テスト用のダミーURLを返す
-    const dummyUrl = `https://via.placeholder.com/400x300/FFB6C1/FFFFFF?text=Photo+${photoId}+(${variant})`
+    // データURIを使用してプレースホルダー画像を生成
+    const width = variant === 'thumb' ? 200 : 400
+    const height = variant === 'thumb' ? 200 : 300
     
-    return NextResponse.json({ url: dummyUrl })
+    // SVGベースのデータURIを生成
+    const svgContent = `
+      <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100%" height="100%" fill="#FFB6C1"/>
+        <text x="50%" y="50%" text-anchor="middle" dy=".3em" 
+              font-family="Arial, sans-serif" font-size="16" fill="#FFFFFF">
+          Photo ${photoId}
+        </text>
+        <text x="50%" y="65%" text-anchor="middle" dy=".3em" 
+              font-family="Arial, sans-serif" font-size="12" fill="#FFFFFF">
+          (${variant})
+        </text>
+      </svg>
+    `
+    
+    const dataUri = `data:image/svg+xml;base64,${Buffer.from(svgContent).toString('base64')}`
+    
+    return NextResponse.json({ url: dataUri })
   } catch (error) {
     console.error('Photo URL generation error:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
