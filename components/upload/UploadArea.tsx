@@ -35,6 +35,78 @@ export default function UploadArea({
   const [uploadFiles, setUploadFiles] = useState<UploadFile[]>([])
   const [isProcessing, setIsProcessing] = useState(false)
 
+  const updateFileStatus = (fileId: string, status: UploadFile['status'], progress?: number, error?: string) => {
+    setUploadFiles(prev => prev.map(f => 
+      f.id === fileId 
+        ? { ...f, status, progress: progress ?? f.progress, error }
+        : f
+    ))
+  }
+
+  // R2へのアップロード処理
+  const uploadFileToR2 = useCallback(async (uploadFile: UploadFile) => {
+    try {
+      updateFileStatus(uploadFile.id, 'uploading', 0)
+      
+      // SHA256計算
+      const arrayBuffer = await uploadFile.file.arrayBuffer()
+      const hashBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer)
+      const hashArray = Array.from(new Uint8Array(hashBuffer))
+      const sha256 = hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
+      
+      // アップロード初期化
+      const initResponse = await fetch('/api/uploads/init', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          filename: uploadFile.file.name,
+          size: uploadFile.file.size,
+          mime: uploadFile.file.type,
+          sha256
+        })
+      })
+      
+      if (!initResponse.ok) {
+        throw new Error('Upload init failed')
+      }
+      
+      const { uploadUrl, key } = await initResponse.json()
+      
+      // R2に直接アップロード
+      const uploadResponse = await fetch(uploadUrl, {
+        method: 'PUT',
+        body: uploadFile.file,
+        headers: {
+          'Content-Type': uploadFile.file.type
+        }
+      })
+      
+      if (!uploadResponse.ok) {
+        throw new Error('R2 upload failed')
+      }
+      
+      // アップロード完了
+      const completeResponse = await fetch('/api/uploads/complete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          key,
+          metadata: uploadFile.metadata
+        })
+      })
+      
+      if (!completeResponse.ok) {
+        throw new Error('Upload complete failed')
+      }
+      
+      updateFileStatus(uploadFile.id, 'success', 100)
+      
+    } catch (error) {
+      console.error('Upload error:', error)
+      updateFileStatus(uploadFile.id, 'error', 0, error instanceof Error ? error.message : 'Upload failed')
+    }
+  }, [])
+
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     setIsProcessing(true)
     
@@ -87,81 +159,6 @@ export default function UploadArea({
     setIsProcessing(false)
   }, [uploadFiles, onUpload, uploadFileToR2])
 
-  // R2へのアップロード処理
-  const uploadFileToR2 = useCallback(async (uploadFile: UploadFile) => {
-    try {
-      updateFileStatus(uploadFile.id, 'uploading', 0)
-      
-      // SHA256計算
-      const arrayBuffer = await uploadFile.file.arrayBuffer()
-      const hashBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer)
-      const hashArray = Array.from(new Uint8Array(hashBuffer))
-      const sha256 = hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
-      
-      // アップロード初期化
-      const initResponse = await fetch('/api/uploads/init', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          filename: uploadFile.file.name,
-          size: uploadFile.file.size,
-          mime: uploadFile.file.type,
-          sha256
-        })
-      })
-      
-      if (!initResponse.ok) {
-        const error = await initResponse.json()
-        if (error.duplicate) {
-          updateFileStatus(uploadFile.id, 'success', 100)
-          return
-        }
-        throw new Error(error.error || 'Upload init failed')
-      }
-      
-      const { putUrl, photoId } = await initResponse.json()
-      
-      // R2へ直接アップロード
-      const uploadResponse = await fetch(putUrl, {
-        method: 'PUT',
-        body: uploadFile.file,
-        headers: {
-          'Content-Type': uploadFile.file.type
-        }
-      })
-      
-      if (!uploadResponse.ok) {
-        throw new Error('R2 upload failed')
-      }
-      
-      updateFileStatus(uploadFile.id, 'uploading', 90)
-      
-      // アップロード完了
-      const completeResponse = await fetch('/api/uploads/complete', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ photoId, key: `orig/${getCurrentUser()?.family_id}/${photoId}.${uploadFile.file.type.split('/')[1]}` })
-      })
-      
-      if (!completeResponse.ok) {
-        throw new Error('Upload complete failed')
-      }
-      
-      updateFileStatus(uploadFile.id, 'success', 100)
-      
-    } catch (error) {
-      console.error('Upload error:', error)
-      updateFileStatus(uploadFile.id, 'error', 0, error instanceof Error ? error.message : 'Upload failed')
-    }
-  }, [])
-
-  const updateFileStatus = (fileId: string, status: UploadFile['status'], progress?: number, error?: string) => {
-    setUploadFiles(prev => prev.map(f => 
-      f.id === fileId 
-        ? { ...f, status, progress: progress ?? f.progress, error }
-        : f
-    ))
-  }
 
   const { getRootProps, getInputProps, isDragActive, fileRejections } = useDropzone({
     onDrop,
