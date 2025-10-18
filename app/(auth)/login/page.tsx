@@ -248,7 +248,7 @@ export default function LoginPage() {
               className="smugmug-card px-10 py-8"
             >
               <form onSubmit={handleLogin} className="space-y-6">
-                <div className="relative mb-4">
+                <div className="relative mb-6">
                   <input
                     ref={usernameRef}
                     id="username"
